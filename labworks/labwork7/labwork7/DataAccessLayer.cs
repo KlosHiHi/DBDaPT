@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace labwork6
+namespace labwork7
 {
     public static class DataAccessLayer
     {
@@ -8,6 +8,8 @@ namespace labwork6
         private static string _datebase = "ispp3101";
         private static string _userLogin = "ispp3101";
         private static string _password = "3101";
+
+        private static List<Film> _films = [];
 
         public static string ConnectionString
         {
@@ -43,7 +45,7 @@ namespace labwork6
                 connection.Open();
                 return true;
             }
-            catch (SqlException ex) 
+            catch (SqlException ex)
             {
                 return false;
             }
@@ -56,7 +58,7 @@ namespace labwork6
             try
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand(sqlCommand, connection);
+                SqlCommand command = new(sqlCommand, connection);
                 int changedRowsAmount = await command.ExecuteNonQueryAsync();
                 return changedRowsAmount;
             }
@@ -67,14 +69,14 @@ namespace labwork6
             }
         }
 
-        public static async Task<object?> SelectRowsCommandAsync(string sqlCommand)
+        public static async Task<object?> GetRowsCommandAsync(string sqlCommand)
         {
             await using SqlConnection connection = new(ConnectionString);
 
             try
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand(sqlCommand, connection);
+                SqlCommand command = new(sqlCommand, connection);
 
                 return await command.ExecuteScalarAsync();
             }
@@ -95,7 +97,7 @@ namespace labwork6
                 await connection.OpenAsync();
 
                 string query = "UPDATE Session SET Price = @newPrice WHERE SessionId = @sessionId";
-                SqlCommand command = new SqlCommand(query, connection);
+                SqlCommand command = new(query, connection);
 
                 command.Parameters.AddWithValue("@newPrice", newPrice);
                 command.Parameters.AddWithValue("@sessionId", sessionId);
@@ -109,7 +111,7 @@ namespace labwork6
         }
 
 
-        public static async Task UploadFile(int filmId, string fileName)
+        public static async Task UploadFilmPosterAsync(int filmId, string fileName)
         {
             await using SqlConnection connection = new(ConnectionString);
 
@@ -117,13 +119,57 @@ namespace labwork6
             {
                 await connection.OpenAsync();
 
-                string query = "UPDATE Film SET Poster = @fileName WHERE filmId = @filmId";
+                string query = "UPDATE Film SET Poster = @fileData WHERE filmId = @filmId";
+                SqlCommand command = new(query, connection);
+
+                byte[] fileData = await File.ReadAllBytesAsync(fileName);
+
+                if (fileData.Length < 1024)
+                {
+                    command.Parameters.AddWithValue("@filmId", filmId);
+                    command.Parameters.AddWithValue("@fileData", fileData);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public static async Task DownloadFilmPosterAsync(int filmId, string fileName)
+        {
+            await using SqlConnection connection = new(ConnectionString);
+
+            try
+            {
+                await connection.OpenAsync();
+
+                string query = "SELECT Film WHERE filmId = @filmId";
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Parameters.AddWithValue("@filmId", filmId);
-                command.Parameters.AddWithValue("@fileName", fileName);
 
-                await command.ExecuteNonQueryAsync();
+                var fileData = await command.ExecuteScalarAsync();
+
+                await File.WriteAllBytesAsync(fileName, fileData as byte[]);
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public static async Task<List<Film>> GetFilmsAsync()
+        {
+            await using SqlConnection connection = new(ConnectionString);
+
+            try
+            {
+                await connection.OpenAsync();
+                string query = "SELECT Film WHERE filmId = @filmId";
+                SqlCommand command = new SqlCommand(query, connection);
             }
             catch (SqlException ex)
             {

@@ -1,11 +1,10 @@
-﻿
-
-namespace labwork6
+﻿namespace labwork7
 {
     internal class Program
     {
         static async Task Main(string[] args)
         {
+            //Task 1
             Console.WriteLine(DataAccessLayer.ConnectionString);
 
             //DataAccessLayer.ChangeConnectionSettings("pgsad", "ispp0101", "user", "12134");
@@ -20,16 +19,15 @@ namespace labwork6
 
             //Task 2
             Console.WriteLine($"Изменено строк: {await DataAccessLayer.UpdateRowsCommandAsync("UPDATE Game SET Price=1100 WHERE GameId = 11")}");
-            Console.WriteLine(await DataAccessLayer.SelectRowsCommandAsync("SELECT * FROM Game WHERE GameId = 10"));
+            Console.WriteLine(await DataAccessLayer.GetRowsCommandAsync("SELECT * FROM Game WHERE GameId = 10"));
 
-            //Task 1
+            //Task 3
             DataAccessLayer.ChangeSessionPriceAsync(350, 3);
 
-            byte[] fileData = File.ReadAllBytes(Path.Combine(Environment.CurrentDirectory, "")); // чтение содержимого файла
-            if (fileData.Length < 1024) // проверка, что размер меньше 1 КБ
-            {
-                // выполнение SqlCommand с параметром, в параметр передать значение fileData
-            }
+            //Task4
+            DataAccessLayer.UploadFilmPosterAsync(1, "");
+
+            DataAccessLayer.DownloadFilmPosterAsync(1, "");
         }
     }
 }
