@@ -28,6 +28,14 @@
             DataAccessLayer.UploadFilmPosterAsync(1, "");
 
             DataAccessLayer.DownloadFilmPosterAsync(1, "");
+
+            //Task 5
+            List<Film> films = await DataAccessLayer.GetFilmsAsync();
+
+            foreach (Film film in films)
+            {
+                Console.WriteLine(film);
+            }
         }
     }
 }

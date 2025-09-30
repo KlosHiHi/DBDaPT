@@ -11,5 +11,10 @@
         public byte AgeLimit { get; set; } = (byte)0;
         public DateOnly StartRental { get; set; } = DateOnly.FromDateTime(DateTime.Now.Date);
         public DateOnly EndRental { get; set; } = DateOnly.FromDateTime(DateTime.Now.Date);
+
+        public override string ToString()
+        {
+            return $"{FilmId}.{Name} - ({ReleaseYear}г.) \n{Description} {Duration}мин., \nНачало проката {StartRental}, Конец проката {EndRental}, {AgeLimit}+";
+        }
     }
 }

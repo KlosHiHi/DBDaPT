@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace labwork7
 {
@@ -170,10 +171,32 @@ namespace labwork7
                 await connection.OpenAsync();
                 string query = "SELECT Film WHERE filmId = @filmId";
                 SqlCommand command = new SqlCommand(query, connection);
+
+                var reader = await command.ExecuteReaderAsync();
+
+                if(reader.HasRows)
+                    while (reader.Read())
+                    {
+                        _films.Add(new Film
+                        {
+                            FilmId = Convert.ToInt32(reader["FilmId"]),
+                            Name = reader["Name"].ToString(),
+                            Duration = Convert.ToUInt16(reader["Duration"]),
+                            ReleaseYear = DateOnly.FromDateTime(Convert.ToDateTime(reader["ReleaseDate"])),
+                            Description = reader["Description"].ToString(),
+                            Poster = (byte[])reader["Poster"],
+                            AgeLimit = Convert.ToByte(reader["AgeLimit"]),
+                            StartRental = DateOnly.FromDateTime(Convert.ToDateTime(reader["StartRental"])),
+                            EndRental = DateOnly.FromDateTime(Convert.ToDateTime(reader["EndRental"]))
+                        });
+                    }
+
+                return _films;
             }
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.Message);
+                return null;
             }
         }
     }
