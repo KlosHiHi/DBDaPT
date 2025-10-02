@@ -1,4 +1,4 @@
-﻿namespace labwork7
+﻿namespace LabWork7
 {
     public class Film
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace labwork7
+namespace LabWork7
 {
     public static class DataAccessLayer
     {
@@ -120,12 +120,12 @@ namespace labwork7
             {
                 await connection.OpenAsync();
 
-                string query = "UPDATE Film SET Poster = @fileData WHERE filmId = @filmId";
+                string query = "UPDATE Film SET Poster = @fileData WHERE FilmId = @filmId";
                 SqlCommand command = new(query, connection);
 
                 byte[] fileData = await File.ReadAllBytesAsync(fileName);
 
-                if (fileData.Length < 1024)
+                if (fileData.Length < 1024000)
                 {
                     command.Parameters.AddWithValue("@filmId", filmId);
                     command.Parameters.AddWithValue("@fileData", fileData);
@@ -147,14 +147,15 @@ namespace labwork7
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Film WHERE filmId = @filmId";
+                string query = "SELECT Poster FROM Film WHERE FilmId = @filmId";
                 SqlCommand command = new(query, connection);
 
                 command.Parameters.AddWithValue("@filmId", filmId);
 
                 var fileData = await command.ExecuteScalarAsync();
+                byte[]? byteFile = fileData as byte[];
 
-                await File.WriteAllBytesAsync(fileName, fileData as byte[]);
+                await File.WriteAllBytesAsync(fileName, byteFile);
             }
             catch (SqlException ex)
             {
@@ -196,7 +197,7 @@ namespace labwork7
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.Message);
-                return null;
+                return null!;
             }
         }
     }

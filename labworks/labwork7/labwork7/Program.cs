@@ -1,4 +1,4 @@
-﻿namespace labwork7
+﻿namespace LabWork7
 {
     internal class Program
     {
@@ -22,20 +22,15 @@
             Console.WriteLine(await DataAccessLayer.GetRowsCommandAsync("SELECT * FROM Game WHERE GameId = 10"));
 
             //Task 3
-            DataAccessLayer.ChangeSessionPriceAsync(350, 3);
+            await DataAccessLayer.ChangeSessionPriceAsync(350, 3);
 
-            //Task4
-            DataAccessLayer.UploadFilmPosterAsync(1, "");
+            //Task 4
+            //await DataAccessLayer.UploadFilmPosterAsync(3, "C:\\Temp\\ispp31\\DBDaPT\\labworks\\labwork7\\drive.png");
 
-            DataAccessLayer.DownloadFilmPosterAsync(1, "");
+            await DataAccessLayer.DownloadFilmPosterAsync(3, "C:\\Temp\\ispp31\\DBDaPT\\labworks\\labwork7\\poster.png");
 
             //Task 5
-            List<Film> films = await DataAccessLayer.GetFilmsAsync();
-
-            foreach (Film film in films)
-            {
-                Console.WriteLine(film);
-            }
+            
         }
     }
 }
