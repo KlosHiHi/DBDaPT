@@ -48,6 +48,7 @@ namespace labwork7
             }
             catch (SqlException ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
@@ -86,7 +87,6 @@ namespace labwork7
                 Console.WriteLine(ex.Message);
                 return null;
             }
-
         }
 
         public static async Task ChangeSessionPriceAsync(decimal newPrice, int sessionId)
@@ -148,7 +148,7 @@ namespace labwork7
                 await connection.OpenAsync();
 
                 string query = "SELECT Film WHERE filmId = @filmId";
-                SqlCommand command = new SqlCommand(query, connection);
+                SqlCommand command = new(query, connection);
 
                 command.Parameters.AddWithValue("@filmId", filmId);
 
@@ -170,7 +170,7 @@ namespace labwork7
             {
                 await connection.OpenAsync();
                 string query = "SELECT Film WHERE filmId = @filmId";
-                SqlCommand command = new SqlCommand(query, connection);
+                SqlCommand command = new(query, connection);
 
                 var reader = await command.ExecuteReaderAsync();
 
