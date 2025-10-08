@@ -1,28 +1,112 @@
 ﻿using Lections1007.Contexts;
+using Lections1007.Model;
+using Lections1007.Services;
 using Microsoft.EntityFrameworkCore;
 
 Console.WriteLine("Применение ORM [EF Core]");
 
-using var context = new AppDbContext();
+//using var context = new AppDbContext();
+var optionsBuilder = new DbContextOptionsBuilder<StoreDbContext>();
+optionsBuilder.UseSqlServer(@"Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True");
+using var context = new StoreDbContext(optionsBuilder.Options);
 
-var categories = context.Categories.Include(c => c.Games);
-foreach(var category in categories)
-    Console.WriteLine($"[{category.CategoryId}] - {category.Name}, {category.Games?.Count()}");
+var categoryService = new CategoryService(context);
+var categories = await categoryService.GetCategoriesAsync();
 
-Console.WriteLine();
+foreach (var category in categories)
+    Console.WriteLine(category.Name);
 
-var games = context.Games.Include(g => g.Category);
-foreach(var game1 in games) 
-    Console.WriteLine($"[{game1.GameId}] - {game1.Name}, {game1.Category?.Name}");
+static async Task GetValueAsync(AppDbContext context)
+{
+    var btGame = context.Games.FirstOrDefault(x => x.GameId == 3);
+    var game = await context.Games.FindAsync(1);
+    game = context.Games.Find(1);
 
+    game = context.Games.FirstOrDefault(g => g.GameId > 2);
+    game = await context.Games.FirstOrDefaultAsync(g => g.GameId > 2);
 
-var btGame = context.Games.FirstOrDefault(x => x.GameId == 3);
+    game = context.Games.SingleOrDefault(g => g.GameId == 2); //Должен принимать лишь одно вхождение
+    game = await context.Games.SingleOrDefaultAsync(g => g.GameId == 2);
+}
 
-var game = await context.Games.FindAsync(1);
-game = context.Games.Find(1);
+static void GetList(AppDbContext context)
+{
+    var categories = context.Categories.Include(c => c.Games);
+    foreach (var category in categories)
+        Console.WriteLine($"[{category.CategoryId}] - {category.Name}, {category.Games?.Count()}");
 
-game = context.Games.FirstOrDefault(g => g.GameId > 2);
-game = await context.Games.FirstOrDefaultAsync(g => g.GameId > 2);
+    Console.WriteLine();
 
-game = context.Games.SingleOrDefault(g => g.GameId == 2); //Должен принимать лишь одно вхождение
-game = await context.Games.SingleOrDefaultAsync(g => g.GameId == 2);
+    var games = context.Games.Include(g => g.Category);
+    foreach (var game1 in games)
+        Console.WriteLine($"[{game1.GameId}] - {game1.Name}, {game1.Category?.Name}");
+}
+
+static async Task AddCategory(AppDbContext context)
+{
+    //Insert - добавление значений в таблицу
+    var category = new Category()
+    {
+        Name = "rogue-like"
+    };
+
+    //context.Categories.Add(category);
+    //context.SaveChanges();
+
+    await context.Categories.AddAsync(category);
+    await context.SaveChangesAsync();
+}
+
+static async Task RemoveCategoryAsync(AppDbContext context)
+{
+    //delete - Удаление объекта
+    var category = await context.Categories.FindAsync(8);
+    if (category is not null)
+    {
+        context.Categories.Remove(category);
+
+        await context.SaveChangesAsync();
+    }
+    //AddRange(), RemoveRange()
+}
+
+static async Task UpdateCategoryFromDbAsync(AppDbContext context)
+{
+    //update - Обновление данных
+    //1 - получаем объект и меняем его
+    var category = await context.Categories.FindAsync(1);
+
+    if (category is null)
+        throw new ArgumentException("category isn't found");
+
+    category.Name = "simulator";
+
+    await context.SaveChangesAsync();
+}
+
+static async Task UpdateCategoryFromCodeAsync(AppDbContext context)
+{
+    //update - Обновление данных
+    //2 - создаём объект в программе и отправляем изм. данные
+    var category = new Category()
+    {
+        CategoryId = 2,
+        Name = "Shooter",
+    };
+
+    context.Categories.Update(category);
+    await context.SaveChangesAsync();
+}
+
+static async Task MassiveUpdateAsync(AppDbContext context)
+{
+    await context.Games
+        .Where(g => g.GameId > 4)
+        .ExecuteDeleteAsync();
+
+    await context.Games
+        .Where(g => g.CategoryId == 1)
+        .ExecuteUpdateAsync(setters => setters
+            .SetProperty(g => g.IsDeleted, g => false)
+            .SetProperty(g => g.KeysAmount, g => g.KeysAmount > 90 ? 120 : 25));
+}
