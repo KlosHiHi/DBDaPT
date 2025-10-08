@@ -9,7 +9,7 @@ namespace LabWork9.Services
         private readonly AppDbContext _context = context;
 
         public async Task<List<Ticket>> GetAsync()
-            => await _context.Tickets.ToListAsync();
+            => await _context.Tickets.Include(t => t.Visitor).ToListAsync();
 
         public async Task AddAsync(Ticket entity)
         {
