@@ -1,6 +1,5 @@
 ﻿using Lections1007.Contexts;
 using Lections1007.Model;
-using Lections1007.Services;
 using Microsoft.EntityFrameworkCore;
 
 Console.WriteLine("Применение ORM [EF Core]");
@@ -10,11 +9,21 @@ var optionsBuilder = new DbContextOptionsBuilder<StoreDbContext>();
 optionsBuilder.UseSqlServer(@"Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True");
 using var context = new StoreDbContext(optionsBuilder.Options);
 
-var categoryService = new CategoryService(context);
-var categories = await categoryService.GetCategoriesAsync();
+var filteredGame = context.Games.AsQueryable();
 
-foreach (var category in categories)
-    Console.WriteLine(category.Name);
+if (true)
+    filteredGame = filteredGame.Where(g => g.Price < 500);
+if (true)
+    filteredGame = filteredGame.Where(g => g.Name.Contains("a"));
+
+Console.WriteLine(filteredGame.ToQueryString());
+
+
+//var categoryService = new CategoryService(context);
+//var categories = await categoryService.GetCategoriesAsync();
+
+//foreach (var category in categories)
+//    Console.WriteLine(category.Name);
 
 static async Task GetValueAsync(AppDbContext context)
 {
@@ -109,4 +118,38 @@ static async Task MassiveUpdateAsync(AppDbContext context)
         .ExecuteUpdateAsync(setters => setters
             .SetProperty(g => g.IsDeleted, g => false)
             .SetProperty(g => g.KeysAmount, g => g.KeysAmount > 90 ? 120 : 25));
+}
+
+static void Include(StoreDbContext context)
+{
+
+    var result = context.Games
+        .Include(g => g.Category);
+    Console.WriteLine(result.ToQueryString());
+    Console.WriteLine();
+    foreach (var x in result)
+        Console.WriteLine($"{x.Name} - {x.Category?.Name}");
+
+
+    var categories = context.Categories
+        .Include(c => c.Games);
+    Console.WriteLine(categories.ToQueryString());
+    Console.WriteLine();
+    foreach (var x in categories)
+        Console.WriteLine($"{x.Name} - {x.Games?.Count()}");
+}
+
+static void Pagination(StoreDbContext context)
+{
+    int pageSize = 3;
+    int currentPage = 4;
+
+    var games = context.Games
+        .Skip(pageSize * (currentPage - 1))
+        .Take(pageSize);
+
+    Console.WriteLine(games.ToQueryString());
+    Console.WriteLine();
+    foreach (var game in games)
+        Console.WriteLine(game.Name);
 }

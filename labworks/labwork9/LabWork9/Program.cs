@@ -28,34 +28,28 @@ Visitor newVisitor = new()
 
 Ticket newTicket = new()
 {
-    SessionId = 5,
-    VisitorId = 2,
-    Row = 6,
-    Seat = 13
+    SessionId = 4,
+    VisitorId = 8,
+    Row = 5,
+    Seat = 10
 };
 
 //await visitorService.AddAsync(newVisitor);
-//await ticketService.AddAsync(newTicket);
+await ticketService.AddAsync(newTicket);
 
-//await ticketService.DeleteAsync(6);
-//await visitorService.DeleteAsync(6);
+//await ticketService.DeleteAsync(12);
+//await visitorService.DeleteAsync(20);
 
 Visitor updateVisitor = new()
 {
-    VisitorId = 4,
+    VisitorId = 23,
     Phone = "79210775692",
     BirthDate = DateTime.Now,
     Email = "slipknotOff@mail.ru"
 };
 
-Ticket updateTicket = new()
-{
-    TicketId = 1,
-    SessionId = 1,
-    VisitorId = 2,
-    Row = 5,
-    Seat = 11
-};
+newTicket.Row = 8;
+newTicket.Seat = 15;
 
-await visitorService.UpdateAsync(updateVisitor);
-await ticketService.UpdateAsync(updateTicket);
+//await visitorService.UpdateAsync(updateVisitor);
+await ticketService.UpdateAsync(newTicket);

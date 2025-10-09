@@ -10,9 +10,10 @@ namespace LabWork9.Services
 
         public async Task<List<Visitor>> GetAsync()
             => await _context.Visitors.Include(v => v.Tickets).ToListAsync();
+
         public async Task AddAsync(Visitor entity)
         {
-            _context.Visitors.Add(entity);
+            await _context.Visitors.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -28,7 +29,17 @@ namespace LabWork9.Services
 
         public async Task UpdateAsync(Visitor entity)
         {
-            _context.Visitors.Update(entity);
+            //var visitor = await _context.Visitors.FindAsync(entity.VisitorId);
+
+            //if (visitor is null)
+            //    throw new ArgumentException("visitor isn't found");
+
+            //visitor.Email = entity.Email;
+            //visitor.Phone = entity.Phone;
+            //visitor.BirthDate = entity.BirthDate;
+            //visitor.Name = entity.Name;
+
+            _context.Visitors.Update(entity);   
             await _context.SaveChangesAsync();
         }
     }

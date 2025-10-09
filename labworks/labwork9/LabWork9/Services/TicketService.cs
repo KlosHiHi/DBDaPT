@@ -13,7 +13,7 @@ namespace LabWork9.Services
 
         public async Task AddAsync(Ticket entity)
         {
-            _context.Tickets.Add(entity);
+            await _context.Tickets.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -29,6 +29,16 @@ namespace LabWork9.Services
 
         public async Task UpdateAsync(Ticket entity)
         {
+            //var ticket = await _context.Tickets.FindAsync(entity.TicketId);
+
+            //if (ticket is null)
+            //    throw new ArgumentException("ticket isn't found");
+
+            //ticket.Row = entity.Row;
+            //ticket.Seat = entity.Seat;
+            //ticket.SessionId = entity.SessionId;
+            //ticket.VisitorId = entity.VisitorId;
+
             _context.Tickets.Update(entity);
             await _context.SaveChangesAsync();
         }
