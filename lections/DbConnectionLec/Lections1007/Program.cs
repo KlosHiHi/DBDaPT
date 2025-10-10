@@ -1,4 +1,6 @@
 ﻿using Lections1007.Contexts;
+using Lections1007.DTOs;
+using Lections1007.FIlteres;
 using Lections1007.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,15 +11,21 @@ var optionsBuilder = new DbContextOptionsBuilder<StoreDbContext>();
 optionsBuilder.UseSqlServer(@"Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True");
 using var context = new StoreDbContext(optionsBuilder.Options);
 
-var filteredGame = context.Games.AsQueryable();
+var titles = context.Games
+    .Select(g => g.Name);
 
-if (true)
-    filteredGame = filteredGame.Where(g => g.Price < 500);
-if (true)
-    filteredGame = filteredGame.Where(g => g.Name.Contains("a"));
+foreach (var title in titles)
+    Console.WriteLine(title);
 
-Console.WriteLine(filteredGame.ToQueryString());
+var games = context.Games
+    .Include(g => g.Category)
+    .Select(g => g.ToDto());
 
+games = context.Games
+    .Select(GameExpression.ToDto);
+
+foreach (var game in games)
+    Console.WriteLine($"{game.Title}, {game.Price} - {game.Tax}, [{game.Category}]");
 
 //var categoryService = new CategoryService(context);
 //var categories = await categoryService.GetCategoriesAsync();
@@ -122,7 +130,6 @@ static async Task MassiveUpdateAsync(AppDbContext context)
 
 static void Include(StoreDbContext context)
 {
-
     var result = context.Games
         .Include(g => g.Category);
     Console.WriteLine(result.ToQueryString());
@@ -152,4 +159,46 @@ static void Pagination(StoreDbContext context)
     Console.WriteLine();
     foreach (var game in games)
         Console.WriteLine(game.Name);
+}
+
+static void Filter(StoreDbContext context)
+{
+    var filteredGame = context.Games.AsQueryable();
+
+    if (true)
+        filteredGame = filteredGame.Where(g => g.Price < 500);
+    if (true)
+        filteredGame = filteredGame.Where(g => g.Name.Contains("a"));
+
+    Console.WriteLine(filteredGame.ToQueryString());
+}
+
+static void FilterClass(StoreDbContext context)
+{
+    GameFilter filter = new()
+    {
+        Price = 500,
+        Category = "simulator",
+    };
+
+    var games = context.Games.AsQueryable();
+
+    if (filter.Price is not null)
+        games = games.Where(g => g.Price < filter.Price);
+    if (filter.Name is not null)
+        games = games.Where(g => g.Name.Contains(filter.Name));
+    if (true)
+        games = games.Where(g => g.Category.Name.Contains(filter.Category));
+}
+
+static void Sort(StoreDbContext context)
+{
+    var games = context.Games
+        .OrderByDescending(g => g.Price);
+
+    games = context.Games
+        .OrderBy(g => EF.Property<object>(g, "Name"));
+
+    foreach (var game in games)
+        Console.WriteLine($"{game.Name}, {game.Price} руб.");
 }
