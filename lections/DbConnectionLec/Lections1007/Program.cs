@@ -3,29 +3,52 @@ using Lections1007.DTOs;
 using Lections1007.FIlteres;
 using Lections1007.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 Console.WriteLine("Применение ORM [EF Core]");
 
 //using var context = new AppDbContext();
 var optionsBuilder = new DbContextOptionsBuilder<StoreDbContext>();
 optionsBuilder.UseSqlServer(@"Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True");
+optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
+optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
 using var context = new StoreDbContext(optionsBuilder.Options);
 
-var titles = context.Games
-    .Select(g => g.Name);
-
-foreach (var title in titles)
-    Console.WriteLine(title);
+context.ChangeTracker.QueryTrackingBehavior = 
+    QueryTrackingBehavior.NoTracking;
 
 var games = context.Games
-    .Include(g => g.Category)
-    .Select(g => g.ToDto());
+    .Join(context.Categories,
+        g => g.CategoryId,
+        c => c.CategoryId,
+        (g,c) => new
+        {
+            g.Name,
+            Category = c.Name,
+        });
 
-games = context.Games
-    .Select(GameExpression.ToDto);
+var badgames = context.Games
+    .Join(context.Categories,
+        g => g.GameId,
+        c => c.CategoryId,
+        (g, c) => new
+        {
+            g.GameId,
+            g.Name,
+            Category = c.Name,
+        });
 
-foreach (var game in games)
-    Console.WriteLine($"{game.Title}, {game.Price} - {game.Tax}, [{game.Category}]");
+Console.WriteLine(badgames.ToQueryString());
+Debug.WriteLine(games.ToQueryString());
+Trace.WriteLine(games.ToQueryString());
+
+var isAllGamesDeleted = context.Games
+    .All(g => g.IsDeleted);
+
+var hasUndeletedGames = context.Games
+    .Any(g => !g.IsDeleted);
 
 //var categoryService = new CategoryService(context);
 //var categories = await categoryService.GetCategoriesAsync();
@@ -201,4 +224,49 @@ static void Sort(StoreDbContext context)
 
     foreach (var game in games)
         Console.WriteLine($"{game.Name}, {game.Price} руб.");
+}
+
+static void Dtos(StoreDbContext context)
+{
+    var titles = context.Games
+        .Select(g => g.Name);
+
+    foreach (var title in titles)
+        Console.WriteLine(title);
+
+    var games = context.Games
+        .Include(g => g.Category)
+        .Select(g => g.ToDto());
+
+    games = context.Games
+        .Select(GameExpression.ToDto);
+
+    foreach (var game in games)
+        Console.WriteLine($"{game.Title}, {game.Price} - {game.Tax}, [{game.Category}]");
+}
+
+static void GroupBy(StoreDbContext context)
+{
+    var categories1 = context.Games
+        .GroupBy(g => g.Category!.Name)
+        .Select(group => new
+        {
+            CategoryName = group.Key,
+            GamesCount = group.Count(),
+        });
+
+    Console.WriteLine(categories1.ToQueryString());
+
+    Console.WriteLine();
+
+    var categories2 = context.Games
+        .GroupBy(g => new { g.Category!.Name, g.IsDeleted })
+        .Select(group => new
+        {
+            CategoryName = group.Key.Name,
+            group.Key.IsDeleted,
+            GamesCount = group.Count(g => g.IsDeleted),
+        });
+
+    Console.WriteLine(categories2.ToQueryString());
 }

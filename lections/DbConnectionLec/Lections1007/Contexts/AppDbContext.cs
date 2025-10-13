@@ -1,5 +1,6 @@
 ﻿using Lections1007.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Lections1007.Contexts
 {
@@ -20,8 +21,9 @@ namespace Lections1007.Contexts
         {
             //optionsBuilder.UseSqlite("Data Source = testDb.sqlite");
 
-            optionsBuilder.UseSqlServer(@"Data Source=mssql;Initial Catalog=ispp3101;
-User ID=ispp3101;Password=3101;Trust Server Certificate=True");
+            optionsBuilder
+                .UseSqlServer(@"Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True")
+                .LogTo(Console.WriteLine, LogLevel.Information);
         }
     }
 }
