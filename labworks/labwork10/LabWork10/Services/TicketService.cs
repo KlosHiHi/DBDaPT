@@ -1,5 +1,6 @@
 ﻿using LabWork10.Contexts;
 using LabWork10.Model;
+using LabWork10.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace LabWork10.Services
@@ -8,20 +9,18 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<List<Ticket>> GetAsync(bool isDescending = false)
+        public async Task<List<Ticket>> GetAsync(PageInfo pageInfo = null!, bool isDescending = false)
         {
-            if (isDescending)
-                return await _context.Tickets
-                        .OrderByDescending(t => t.SessionId)
-                        .Skip(pageSize * (currentPage - 1))
-                        .Take(pageSize)
-                        .ToListAsync();
-            
-            return await _context.Tickets
-                        .OrderBy(t => t.SessionId)
-                        .Skip(pageSize * (currentPage - 1))
-                        .Take(pageSize)
-                        .ToListAsync();
+            var tickets = _context.Tickets.AsQueryable();
+
+            tickets = isDescending ? tickets.OrderByDescending(t => t.SessionId) : tickets.OrderBy(t => t.SessionId);
+
+            return (pageInfo is not null) ?
+                await tickets
+                    .Skip(pageInfo.PageSize * (pageInfo.CurrentPage - 1))
+                    .Take(pageInfo.PageSize)
+                    .ToListAsync() :
+                await tickets.ToListAsync();
         }
 
         public async Task<Ticket> GetByIdAsync(int id)

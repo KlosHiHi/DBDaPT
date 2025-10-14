@@ -8,6 +8,6 @@ namespace LabWork10.Model
         public int GenreId { get; set; }
         public string Name { get; set; } = null!;
 
-        public IEnumerable<Film>? Films { get; set; }
+        public IEnumerable<Film>? Films { get; set; } = new List<Film>();
     }
 }

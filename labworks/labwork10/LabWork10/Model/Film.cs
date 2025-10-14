@@ -15,6 +15,6 @@ namespace LabWork10.Model
         public DateTime? RentalFinish { get; set; }
         public bool IsDeleted { get; set; }
 
-        public IEnumerable<Genre>? Genres { get; set; }
+        public IEnumerable<Genre>? Genres { get; set; } = new List<Genre>();
     }
 }
