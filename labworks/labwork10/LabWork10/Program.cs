@@ -4,7 +4,7 @@ using LabWork10.Pagination;
 using LabWork10.Services;
 
 
-AppDbContext context = new AppDbContext();
+AppDbContext context = new();
 
 FilmService filmService = new(context);
 VisitorService visitorService = new(context);

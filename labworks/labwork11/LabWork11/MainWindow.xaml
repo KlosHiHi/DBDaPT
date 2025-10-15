@@ -1,0 +1,64 @@
+﻿<Window x:Class="LabWork11.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LabWork11"
+        mc:Ignorable="d"
+        Title="Список фильмов" Height="450" Width="800" Background="Azure" MinWidth="800" MinHeight="450" MaxHeight="450" MaxWidth="800">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="MintCream"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Background" Value="MintCream"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="40"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Background" Value="MintCream"/>
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="Height" Value="40"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="0.15*"/>
+            <RowDefinition Height="0.2*"/>
+            
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="FilmDataGrid" IsReadOnly="True" SelectionMode="Extended"/>
+
+        <Button x:Name="RemoveButton" Grid.Row="1" Content="Удалить" Click="RemoveButton_ClickAsync"/>
+        <DockPanel Grid.Row="2">
+            <Button x:Name="AddButton" DockPanel.Dock="Right" Content="Добавить" Click="AddButton_ClickAsync"/>
+            <DockPanel>
+                <TextBlock Text="(название)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
+                <TextBox x:Name="NameTextBox" MaxLength="100"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="(длительность)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
+                <TextBox x:Name="DurationTextBox" MaxLength="4"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="(год выпуска)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
+                <TextBox x:Name="ReleaseYearTextBox" MaxLength="4"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="(возраст)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
+                <ComboBox x:Name="AgeLimitComboBox"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="(описание)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
+                <TextBox x:Name="DescriptionRichTextBox" TextWrapping="Wrap" MaxLength="500" Width="290"/>
+            </DockPanel>
+        </DockPanel>
+    </Grid>
+</Window>
