@@ -12,7 +12,9 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
         private int _firstFilmReleaseYear = 1887;
-        public async Task<List<Film>> GetAsync(PageInfo pageInfo = null!, FilmFilter filmFilter = null!, bool isDescending = false)
+        public async Task<List<Film>> GetAsync(PageInfo pageInfo = null!, 
+            FilmFilter filmFilter = null!,
+            bool isDescending = false)
         {
             var films = _context.Films.AsQueryable();
 
