@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lections1003", "Lections1003\Lections1003.csproj", "{902FFC4B-D893-426C-9D65-EC7E41E0593D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lection1003", "Lections1003\Lection1003.csproj", "{902FFC4B-D893-426C-9D65-EC7E41E0593D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lections1007", "Lections1007\Lections1007.csproj", "{AA9F970B-FB2D-43D9-8FB3-2D465FB681EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lection1007", "Lections1007\Lection1007.csproj", "{AA9F970B-FB2D-43D9-8FB3-2D465FB681EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lections1013", "Lections1013\Lections1013.csproj", "{F69D9EA2-A511-474D-BDDE-6D7B8E74373B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lection1013", "Lections1013\Lection1013.csproj", "{F69D9EA2-A511-474D-BDDE-6D7B8E74373B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lection1020", "Lection1020\Lection1020.csproj", "{B65DC040-5B66-42CC-ABC4-6C2DDAFE4820}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{F69D9EA2-A511-474D-BDDE-6D7B8E74373B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F69D9EA2-A511-474D-BDDE-6D7B8E74373B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F69D9EA2-A511-474D-BDDE-6D7B8E74373B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B65DC040-5B66-42CC-ABC4-6C2DDAFE4820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B65DC040-5B66-42CC-ABC4-6C2DDAFE4820}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B65DC040-5B66-42CC-ABC4-6C2DDAFE4820}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B65DC040-5B66-42CC-ABC4-6C2DDAFE4820}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
