@@ -1,6 +1,7 @@
 ﻿using LabWork10.Contexts;
 using LabWork10.Model;
 using LabWork10.Pagination;
+using LabWork10.Sorts;
 using Microsoft.EntityFrameworkCore;
 
 namespace LabWork10.Services
@@ -9,11 +10,15 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<List<Ticket>> GetAsync(PageInfo pageInfo = null!, bool isDescending = false)
+        public async Task<List<Ticket>> GetAsync(Sort sort = null!, Paginate pageInfo = null!)
         {
             var tickets = _context.Tickets.AsQueryable();
 
-            tickets = isDescending ? tickets.OrderByDescending(t => t.SessionId) : tickets.OrderBy(t => t.SessionId);
+            if(sort is not null)
+            {
+                var property = typeof(Ticket).GetProperty(sort.ColumnName);
+                tickets = sort.isDescending ? tickets.OrderByDescending(t => property.GetValue(t)) : tickets.OrderBy(t => property.GetValue(t));
+            }
 
             return (pageInfo is not null) ?
                 await tickets

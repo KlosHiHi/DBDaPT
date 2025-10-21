@@ -4,7 +4,9 @@ using LabWork10.Extensions;
 using LabWork10.Filters;
 using LabWork10.Model;
 using LabWork10.Pagination;
+using LabWork10.Sorts;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace LabWork10.Services
 {
@@ -12,13 +14,17 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
         private int _firstFilmReleaseYear = 1887;
-        public async Task<List<Film>> GetAsync(PageInfo pageInfo = null!, 
+        public async Task<List<Film>> GetAsync(Paginate pageInfo = null!, 
             FilmFilter filmFilter = null!,
-            bool isDescending = false)
+            Sort sort = default!)
         {
             var films = _context.Films.AsQueryable();
 
-            films = isDescending ? films.OrderByDescending(f => f.Name) : films.OrderBy(f => f.Name);
+            if (sort is not null)
+            {
+                var property = typeof(Film).GetProperty(sort.ColumnName);
+                films = sort.isDescending ? films.OrderByDescending(f => property.GetValue(f)) : films.OrderBy(f => property.GetValue(f));
+            }
 
             if (filmFilter.Name is not null)
                 films = films.Where(f => f.Name == filmFilter.Name);

@@ -11,7 +11,7 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<List<Visitor>> GetAsync(PageInfo pageInfo = null!, bool isDescending = false)
+        public async Task<List<Visitor>> GetAsync(Pagination.Paginate pageInfo = null!, bool isDescending = false)
         {
             var visitors = _context.Visitors.AsQueryable();
 

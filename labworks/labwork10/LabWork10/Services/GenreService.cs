@@ -9,7 +9,7 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<List<Genre>> GetAsync(PageInfo pageInfo = null!, bool isDescending = false)
+        public async Task<List<Genre>> GetAsync(Pagination.Paginate pageInfo = null!, bool isDescending = false)
         {
             var genres = _context.Genres.AsQueryable();
 

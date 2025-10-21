@@ -2,6 +2,7 @@
 using LabWork10.Filters;
 using LabWork10.Pagination;
 using LabWork10.Services;
+using LabWork10.Sorts;
 
 
 AppDbContext context = new();
@@ -11,13 +12,20 @@ VisitorService visitorService = new(context);
 TicketService ticketService = new(context);
 GenreService genreService = new(context);
 
-PageInfo pageInfo = new();
+Paginate pageInfo = new();
+
+Sort sort = new()
+{
+    isDescending = false,
+    ColumnName = "Name",
+};
 
 FilmFilter filmFilter = new()
 {
     NamePart = "н",
 };
 
+// Пагинация
 var tickets = await ticketService.GetAsync(pageInfo: pageInfo);
 Console.WriteLine("Билеты:");
 foreach (var ticket in tickets)
@@ -25,20 +33,23 @@ foreach (var ticket in tickets)
 
 Console.WriteLine();
 
-var visitors = await visitorService.GetAsync(isDescending: true);
+// Сортировка
+var visitors = await visitorService.GetAsync();
 Console.WriteLine("Посетители:");
 foreach (var visitor in visitors)
     Console.WriteLine($"{visitor.Name}, {visitor.Phone}");
 
 Console.WriteLine();
 
-var films = await filmService.GetAsync(filmFilter: filmFilter, isDescending: true);
+// Сортировка и фильтрация
+var films = await filmService.GetAsync(filmFilter: filmFilter, sort: sort);
 Console.WriteLine("Фильм:");
 foreach (var film in films)
     Console.WriteLine($"{film.Name} {film.AgeLimit}+");
 
 Console.WriteLine();
 
+//DTO Ticket
 var visitorsDto = await visitorService.GetDtoAsync();
 Console.WriteLine("Билеты Dto:");
 foreach (var visitorDto in visitorsDto)
@@ -46,6 +57,7 @@ foreach (var visitorDto in visitorsDto)
 
 Console.WriteLine();
 
+//DTo FilmGenre
 var filmGenreDtos = await filmService.GetFilmGenreDtoAsync();
 Console.WriteLine("Жанры фильмов Dto:");
 foreach (var filmGenreDto in filmGenreDtos)
