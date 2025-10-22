@@ -10,26 +10,32 @@ namespace LabWork12.Services
         private CinemaDbContext _context = context;
 
         public async Task<List<Session>> GetAllOrderedAsync(Sort sort)
-            => sort.isDescending
-                ? await _context.Sessions.FromSqlRaw($"select * from session order by {sort.ColumnName} desc").ToListAsync()
-                : await _context.Sessions.FromSqlRaw($"select * from session order by {sort.ColumnName}").ToListAsync();
+            => await _context.Sessions
+                .FromSqlRaw($"select * from session order by {sort.ColumnName} {(sort.isDescending ? "desc" : "")}")
+                .ToListAsync();
 
         public async Task<int> IncreasePriceAsync(int quantity, int hallId)
-            => await _context.Database.ExecuteSqlAsync($"update session set price += {quantity} where hallid = {hallId}");
+            => await _context.Database
+                .ExecuteSqlAsync($"update session set price += {quantity} where hallId = {hallId}");
 
         public async Task<decimal> GetMinFilmPriceAsync(int filmId)
-            => await _context.Database
-                    .SqlQuery<decimal>($"select min(price) as value from session where filmid = {filmId}")
-                    .FirstOrDefaultAsync();
+            => (decimal)await _context.Sessions
+                .Where(s => s.FilmId == filmId)
+                .MinAsync(s => s.Price);
 
         public async Task<decimal> GetMaxFilmPriceAsync(int filmId)
-            => await _context.Database
-                    .SqlQuery<decimal>($"select max(price) as value from session where filmid = {filmId}")
-                    .FirstOrDefaultAsync();
+            => (decimal)await _context.Sessions
+                .Where(s => s.FilmId == filmId)
+                .MaxAsync(s => s.Price);
 
         public async Task<decimal> GetAverageFilmPriceAsync(int filmId)
-            => await _context.Database
-                    .SqlQuery<decimal>($"select avg(price) as value from session where filmid = {filmId}")
-                    .FirstOrDefaultAsync();
+            => (decimal)await _context.Sessions
+                .Where(s => s.FilmId == filmId)
+                .AverageAsync(s => s.Price);
+
+        public async Task<List<Session>> GetSessionsByFilmIdAsync(int id)
+            => await _context.Sessions
+                .FromSql($"select * from dbo.GetSessionByFilmId({id})")
+                .ToListAsync();
     }
 }

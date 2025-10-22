@@ -1,14 +1,20 @@
 ﻿using Lection1020.Contexts;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 Console.WriteLine("Выполнение SQL-запросов средсвами ORM");
 
 using GamesDbContext context = new();
 
+int minPrice = 1000;
+int maxPrice = 1500;
 var games = context.Games
-    .Where(g => EF.Functions.Like(g.Name, "[a-d]%"));
-Console.WriteLine(games.ToQueryString());
+        .FromSql($"select * from dbo.GetGamesByPrices({minPrice}, {maxPrice})");
+Console.WriteLine();
+//var games = context.Games
+//    .Where(g => EF.Functions.Like(g.Name, "[a-d]%"));
+//Console.WriteLine(games.ToQueryString());
 
 static async Task FromSql(GamesDbContext context)
 {
@@ -91,4 +97,22 @@ static async Task ExecuteSql(GamesDbContext context)
     int changedRows = await context.Database
         .ExecuteSqlAsync($"update game set price += {addingPrice}");
     Console.WriteLine($"изменено {changedRows} строк");
+}
+
+static async Task ExecProcedure(GamesDbContext context)
+{
+    decimal price = 1000;
+    var games = context.Games
+        .FromSql($"dbo.GetGamesByPrice {price}");
+    Console.WriteLine(games.ToQueryString());
+
+    var id = new SqlParameter()
+    {
+        ParameterName = "@id",
+        SqlDbType = SqlDbType.Int,
+        Direction = ParameterDirection.Output
+    };
+
+    string cat = "арканоид";
+    await context.Database.ExecuteSqlAsync($"[dbo].[AddCategory] {cat}, {id} OUTPUT");
 }

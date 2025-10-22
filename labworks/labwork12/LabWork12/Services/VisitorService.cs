@@ -12,24 +12,25 @@ namespace LabWork12.Services
         private CinemaDbContext _context = context;
 
         public async Task<List<Visitor>> GetAllOrderedAsync(Sort sort)
-            => sort.isDescending
-                ? await _context.Visitors.FromSqlRaw($"select * from visitor order by {sort.ColumnName} desc").ToListAsync()
-                : await _context.Visitors.FromSqlRaw($"select * from visitor order by {sort.ColumnName}").ToListAsync();
+            => await _context.Visitors
+                .FromSqlRaw($"select * from visitor order by {sort.ColumnName} {(sort.isDescending ? "desc" : "")}")
+                .ToListAsync();
 
         public async Task<int> AddVisitor(string phone)
         {
             var phoneParam = new SqlParameter("@phone", phone);
 
-            var param = new SqlParameter
+            var idParam = new SqlParameter
             {
-                ParameterName = "@newId",
+                ParameterName = "@id",
                 SqlDbType = SqlDbType.Int,
                 Direction = ParameterDirection.Output
             };
 
-            await _context.Database.ExecuteSqlRawAsync($"EXEC AddVisitor @phone, @newId OUT", phoneParam, param);
+            await _context.Database
+                .ExecuteSqlRawAsync($"dbo.AddVisitor @phone, @id OUT", phoneParam, idParam);
 
-            return (int)param.Value;
+            return (int)idParam.Value;
         }
     }
 }

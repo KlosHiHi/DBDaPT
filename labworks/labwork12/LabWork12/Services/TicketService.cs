@@ -10,20 +10,21 @@ namespace LabWork12.Services
         private CinemaDbContext _context = context;
 
         public async Task<List<Ticket>> GetAllOrderedAsync(Sort sort)
-            => sort.isDescending
-                ? await _context.Tickets.FromSqlRaw($"select * from ticket order by {sort.ColumnName} desc").ToListAsync()
-                : await _context.Tickets.FromSqlRaw($"select * from ticket order by {sort.ColumnName}").ToListAsync();
+            => await _context.Tickets
+                .FromSqlRaw($"select * from ticket order by {sort.ColumnName} {(sort.isDescending ? "desc" : "")}")
+                .ToListAsync();
 
-        public async Task<DateTime> GetSessionsDateByTicketIdAsync(int id)
+        public async Task<DateTime> GetSessionDateByTicketIdAsync(int id)
             => await _context.Database
-            .SqlQuery<DateTime>($@"select startdate as value from ticket
-join session on ticket.sessionid = session.sessionid
-where ticket.ticketid = {id}")
-            .FirstOrDefaultAsync();
+                .SqlQuery<DateTime>($@"select startDate as value 
+from ticket
+join session on ticket.sessionId = session.sessionId
+where ticket.ticketId = {id}")
+                .FirstOrDefaultAsync();
 
         public async Task<List<Ticket>> GetTicketByPhone(string phone)
             => await _context.Tickets
-                    .FromSqlRaw($"EXEC GetVisitorTickets @p0", phone)
-                    .ToListAsync();
+                .FromSql($"dbo.GetVisitorTickets {phone}")
+                .ToListAsync();
     }
 }

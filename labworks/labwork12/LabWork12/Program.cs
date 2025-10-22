@@ -37,19 +37,22 @@ Console.WriteLine("\ntask - 3");
 Console.WriteLine("\ntask - 4");
 
 // Task 4
-var filmGenres = await filmService.GetFilmGenresByIdAsync(2);
+var filmGenres = await filmService.GetFilmGenresByIdAsync(3);
 filmGenres.ForEach(Console.WriteLine);
+
 
 Console.WriteLine("\ntask - 5");
 
 // Task 5
-var sessionTimes = await ticketService.GetSessionsDateByTicketIdAsync(10);
+var sessionTimes = await ticketService.GetSessionDateByTicketIdAsync(10);
 Console.WriteLine(sessionTimes);
 
 Console.WriteLine("\ntask - 6");
 
-// Task 6 
-films = await filmService.GetFilmStartWithRangeAsync("[а-д]");
+// Task 6
+char firstChar = 'а';
+char secondChar = 'д';
+films = await filmService.GetFilmStartWithRangeAsync(firstChar, secondChar);
 films.ForEach(f => Console.WriteLine($"{f.Name} {f.Duration} минут {f.AgeLimit}+"));
 
 Console.WriteLine();
@@ -70,6 +73,11 @@ ticket.ForEach(t => Console.WriteLine($"{number} [{t.TicketId}] {t.Row} ряд, 
 Console.WriteLine("\ntask - 8");
 
 // Task 8 
-number = "78321234556";
-var newVisitorId = await visitorService.AddVisitor(number);
-Console.WriteLine($"id нового пользователя - {newVisitorId}");
+//number = "79550776521";
+//var newVisitorId = await visitorService.AddVisitor(number);
+//Console.WriteLine($"id нового пользователя - {newVisitorId}");
+
+Console.WriteLine("\ntask - 9");
+
+var sessions = await sessionService.GetSessionsByFilmIdAsync(1);
+sessions.ForEach(s => Console.WriteLine($"[{s.FilmId}] {s.SessionId} - {s.Price} руб"));

@@ -10,30 +10,28 @@ namespace LabWork12.Services
         private CinemaDbContext _context = context;
 
         public async Task<List<Film>> GetAllOrderedAsync(Sort sort)
-            => sort.isDescending
-                ? await _context.Films
-                        .FromSqlRaw($"select * from film order by {sort.ColumnName} desc").ToListAsync()
-                : await _context.Films
-                        .FromSqlRaw($"select * from film order by {sort.ColumnName}").ToListAsync();
+            => await _context.Films
+                .FromSqlRaw($"select * from film order by {sort.ColumnName} {(sort.isDescending ? "desc" : "")}")
+                .ToListAsync();
 
         public async Task<List<Film>> GetByNameAndReleaseYearAsync(string name, int minYear)
             => await _context.Films
-                    .FromSql($"select * from film where name = {name} and releaseyear >= {minYear} ").ToListAsync();
+                .FromSql($"select * from film where name = {name} and releaseYear >= {minYear}")
+                .ToListAsync();
 
         public async Task<List<string>> GetFilmGenresByIdAsync(int id)
         {
             return await _context.Database
-                .SqlQuery<string>($@"select g.name from film as f
-join filmgenre as fg on f.filmid = fg.filmid
-join genre as g on fg.genreid = g.genreid
-where f.filmid = {id}").ToListAsync();
+                .SqlQuery<string>($@"select g.name 
+from genre as g
+join filmGenre as fg on g.genreId = fg.genreId
+where fg.filmId = {id}")
+                .ToListAsync();
         }
 
-        public async Task<List<Film>> GetFilmStartWithRangeAsync(string range)
+        public async Task<List<Film>> GetFilmStartWithRangeAsync(char beginChar, char endChar)
             => await _context.Films
-                    .Where(f => EF.Functions.Like(f.Name, $"{range}%"))
+                    .Where(f => EF.Functions.Like(f.Name, $"[{beginChar}-{endChar}]%"))
                     .ToListAsync();
-
-
     }
 }
