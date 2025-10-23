@@ -17,14 +17,13 @@ namespace LabWork11
             _context = new Ispp3101Context();
             _filmService = new FilmService(_context);
 
-
             InitializeData();
         }
 
         private async Task InitializeData()
         {
-
             FilmDataGrid.ItemsSource = await _filmService.GetAsync();
+            AgeLimitComboBox.ItemsSource = await _filmService.GetAgeLimitsAsync();
         }
 
         private async void AddButton_ClickAsync(object sender, RoutedEventArgs e)
@@ -63,6 +62,16 @@ namespace LabWork11
             {
                 await InitializeData();
             }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void FilmDataGrid_SelectedCellsChanged(object sender, System.Windows.Controls.SelectedCellsChangedEventArgs e)
+        {
+            RemoveButton.IsEnabled = FilmDataGrid.SelectedItem is not null;
         }
     }
 }

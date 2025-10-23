@@ -30,14 +30,13 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="0.15*"/>
+            <RowDefinition Height="0.20*"/>
             <RowDefinition Height="0.2*"/>
             
         </Grid.RowDefinitions>
-        <DataGrid x:Name="FilmDataGrid" IsReadOnly="True" SelectionMode="Extended"/>
-
-        <Button x:Name="RemoveButton" Grid.Row="1" Content="Удалить" Click="RemoveButton_ClickAsync"/>
-        <DockPanel Grid.Row="2">
+        <DataGrid x:Name="FilmDataGrid" IsReadOnly="True" SelectionMode="Extended" SelectedCellsChanged="FilmDataGrid_SelectedCellsChanged"/>
+        
+        <DockPanel Grid.Row="1">
             <Button x:Name="AddButton" DockPanel.Dock="Right" Content="Добавить" Click="AddButton_ClickAsync"/>
             <DockPanel>
                 <TextBlock Text="(название)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
@@ -53,12 +52,23 @@
             </DockPanel>
             <DockPanel>
                 <TextBlock Text="(возраст)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
-                <ComboBox x:Name="AgeLimitComboBox"/>
+                <ComboBox x:Name="AgeLimitComboBox">
+                </ComboBox>
             </DockPanel>
             <DockPanel>
                 <TextBlock Text="(описание)" DockPanel.Dock="Bottom" TextAlignment="Center"/>
                 <TextBox x:Name="DescriptionRichTextBox" TextWrapping="Wrap" MaxLength="500" Width="290"/>
             </DockPanel>
+            
         </DockPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="SaveButton" Content="Сохранить" Click="SaveButton_Click"/>
+            <Button x:Name="RemoveButton" Grid.Column="1" Content="Удалить" Click="RemoveButton_ClickAsync" IsEnabled="False" Background="PaleVioletRed"/>
+        </Grid>
+
     </Grid>
 </Window>

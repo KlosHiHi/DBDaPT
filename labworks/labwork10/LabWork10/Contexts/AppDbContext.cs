@@ -21,8 +21,8 @@ namespace LabWork10.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer("Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True");
-            optionsBuilder.UseSqlServer("Data Source=FLTP-5i5-8256;Initial Catalog=ispp3101;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+            optionsBuilder.UseSqlServer("Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True");
+            //optionsBuilder.UseSqlServer("Data Source=FLTP-5i5-8256;Initial Catalog=ispp3101;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

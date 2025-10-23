@@ -6,7 +6,7 @@ using LabWork10.Model;
 using LabWork10.Pagination;
 using LabWork10.Sorts;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using System.Linq.Dynamic.Core;
 
 namespace LabWork10.Services
 {
@@ -14,26 +14,26 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
         private int _firstFilmReleaseYear = 1887;
-        public async Task<List<Film>> GetAsync(Paginate pageInfo = null!, 
+        public async Task<List<Film>> GetAsync(Paginate pageInfo = null!,
             FilmFilter filmFilter = null!,
-            Sort sort = default!)
+            Sort sort = null!)
         {
             var films = _context.Films.AsQueryable();
 
             if (sort is not null)
-            {
-                var property = typeof(Film).GetProperty(sort.ColumnName);
-                films = sort.isDescending ? films.OrderByDescending(f => property.GetValue(f)) : films.OrderBy(f => property.GetValue(f));
-            }
+                films = films.OrderBy($"{sort.ColumnName} {(sort.isDescending ? "desc" : "")}");
 
-            if (filmFilter.Name is not null)
-                films = films.Where(f => f.Name == filmFilter.Name);
-            if (filmFilter.NamePart is not null)
-                films = films.Where(f => f.Name.Contains(filmFilter.NamePart));
-            if (filmFilter.MinReleaseYear > _firstFilmReleaseYear)
-                films = films.Where(f => f.ReleaseYear >= filmFilter.MinReleaseYear);
-            if (filmFilter.Date is not null)
-                films = films.Where(f => f.RentalFinish < filmFilter.Date);
+            if (filmFilter is not null)
+            {
+                if (filmFilter.Name is not null)
+                    films = films.Where(f => f.Name == filmFilter.Name);
+                if (filmFilter.NamePart is not null)
+                    films = films.Where(f => f.Name.Contains(filmFilter.NamePart));
+                if (filmFilter.MinReleaseYear > _firstFilmReleaseYear)
+                    films = films.Where(f => f.ReleaseYear >= filmFilter.MinReleaseYear);
+                if (filmFilter.Date is not null)
+                    films = films.Where(f => f.RentalFinish < filmFilter.Date);
+            }
 
             if (pageInfo is not null)
                 films = films

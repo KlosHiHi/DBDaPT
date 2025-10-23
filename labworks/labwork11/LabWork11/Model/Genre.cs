@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LabWork11.Model;
+﻿namespace LabWork11.Model;
 
 public partial class Genre
 {

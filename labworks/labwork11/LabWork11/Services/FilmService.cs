@@ -23,6 +23,12 @@ namespace LabWork11.Services
             return await films.ToListAsync();
         }
 
+        public async Task<List<string>> GetAgeLimitsAsync()
+            => await _context.Films
+                .GroupBy(f => f.AgeLimit ?? "")
+                .Select(f => f.Key)
+                .ToListAsync();
+
         public async Task RemoveAsync(int id)
         {
             var film = await GetByIdAsync(id);

@@ -3,6 +3,7 @@ using LabWork10.Model;
 using LabWork10.Pagination;
 using LabWork10.Sorts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace LabWork10.Services
 {
@@ -10,15 +11,12 @@ namespace LabWork10.Services
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<List<Ticket>> GetAsync(Sort sort = null!, Paginate pageInfo = null!)
+        public async Task<List<Ticket>> GetAsync(Paginate pageInfo = null!, Sort sort = null!)
         {
             var tickets = _context.Tickets.AsQueryable();
 
-            if(sort is not null)
-            {
-                var property = typeof(Ticket).GetProperty(sort.ColumnName);
-                tickets = sort.isDescending ? tickets.OrderByDescending(t => property.GetValue(t)) : tickets.OrderBy(t => property.GetValue(t));
-            }
+            if (sort is not null)
+                tickets = tickets.OrderBy($"{sort.ColumnName} {(sort.isDescending ? "desc" : "")}");
 
             return (pageInfo is not null) ?
                 await tickets

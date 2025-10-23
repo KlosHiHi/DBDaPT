@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LabWork11.Model;
+﻿namespace LabWork11.Model;
 
 public partial class Session
 {
@@ -18,8 +15,4 @@ public partial class Session
     public bool? IsFilm3d { get; set; }
 
     public virtual Film Film { get; set; } = null!;
-
-    public virtual CinemaHall Hall { get; set; } = null!;
-
-    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

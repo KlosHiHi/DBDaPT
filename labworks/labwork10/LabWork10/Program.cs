@@ -24,7 +24,7 @@ FilmFilter filmFilter = new()
 {
     NamePart = "н",
 };
-
+/*
 // Пагинация
 var tickets = await ticketService.GetAsync(pageInfo: pageInfo);
 Console.WriteLine("Билеты:");
@@ -40,15 +40,15 @@ foreach (var visitor in visitors)
     Console.WriteLine($"{visitor.Name}, {visitor.Phone}");
 
 Console.WriteLine();
-
+*/
 // Сортировка и фильтрация
-var films = await filmService.GetAsync(filmFilter: filmFilter, sort: sort);
+var films = await filmService.GetAsync(sort: sort);
 Console.WriteLine("Фильм:");
 foreach (var film in films)
     Console.WriteLine($"{film.Name} {film.AgeLimit}+");
 
 Console.WriteLine();
-
+/*
 //DTO Ticket
 var visitorsDto = await visitorService.GetDtoAsync();
 Console.WriteLine("Билеты Dto:");
@@ -67,3 +67,4 @@ foreach (var filmGenreDto in filmGenreDtos)
         Console.Write($"{genre} ");
     Console.WriteLine();
 }
+*/
