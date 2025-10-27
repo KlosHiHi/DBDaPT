@@ -1,3 +1,4 @@
+using Lection1024.Contexts;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
