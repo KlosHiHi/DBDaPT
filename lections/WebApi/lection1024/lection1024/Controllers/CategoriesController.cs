@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lection1024.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiversion}/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController(GamesDbContext context) : ControllerBase
     {
@@ -15,22 +14,28 @@ namespace Lection1024.Controllers
         // GET: api/Categories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories(
-            string? sortBy, int page = 1)
+            [FromQuery] string? sortBy = null,
+            [FromQuery] int? page = null)
         {
             var categories = _context.Categories.AsQueryable();
-            categories = sortBy?.ToLower() switch
+
+            if (!string.IsNullOrWhiteSpace(sortBy)) //string !_ null 
             {
-                "name" => categories.OrderBy(c => c.Name),
-                "id" => categories.OrderBy(c => c.CategoryId),
-                _ => categories
-            };
+                categories = sortBy?.ToLower() switch
+                {
+                    "name" => categories.OrderBy(c => c.Name),
+                    "id" => categories.OrderBy(c => c.CategoryId),
+                    _ => categories
+                };
+            }
 
-            var pageSize = 10;
-
-            categories = categories
-                .Skip(pageSize * (page - 1))
-                .Take(pageSize);
-
+            if (page.HasValue) // int != null six seven pidisyat dva
+            {
+                var pageSize = 10;
+                categories = categories
+                    .Skip(pageSize * ((int)page - 1))
+                    .Take(pageSize);
+            }
             return await categories.ToListAsync();
         }
 
