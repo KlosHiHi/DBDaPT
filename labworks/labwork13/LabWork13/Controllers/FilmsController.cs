@@ -30,8 +30,7 @@ namespace LabWork13.Controllers
         [HttpGet("pages")]
         public async Task<ActionResult<IEnumerable<Film>>> GetPaginatedAndSortedFilms(
             [FromQuery] int? page = null,
-            [FromQuery] string? sortBy = null,
-            [FromQuery] bool isDescending = false)
+            [FromQuery] string? sortBy = null)
         {
             var films = _context.Films.AsQueryable();
 
@@ -40,9 +39,8 @@ namespace LabWork13.Controllers
                 films = sortBy.ToLower() switch
                 {
                     "name" => films.OrderBy(f => f.Name),
-                    "releaseyear" => isDescending ?
-                        films.OrderByDescending(f => f.ReleaseYear) :
-                        films.OrderBy(f => f.ReleaseYear),
+                    "releaseyear" => films.OrderBy(f => f.ReleaseYear),
+                    "releaseyear_desc" => films.OrderByDescending(f => f.ReleaseYear),
                     _ => films
                 };
             }
@@ -83,22 +81,22 @@ namespace LabWork13.Controllers
         [HttpGet("{id}/genres")]
         public async Task<ActionResult<IEnumerable<Genre>>> GetFilmGenresById([FromRoute] int id)
         {
-            var films = await _context.Films
+            var film = await _context.Films
                 .Include(f => f.Genres)
                 .FirstOrDefaultAsync(f => f.FilmId == id);
 
-            return films is null ? NotFound() : films.Genres.ToList();
+            return film is null ? NotFound() : film.Genres.ToList();
         }
 
         // ../films/{id}/sessions 
         [HttpGet("{id}/sessions")]
         public async Task<ActionResult<IEnumerable<Session>>> GetFilmSessionsById([FromRoute] int id)
         {
-            var films = await _context.Films
+            var film = await _context.Films
                 .Include(f => f.Sessions)
                 .FirstOrDefaultAsync(f => f.FilmId == id);
 
-            return films is null ? NotFound() : films.Sessions.Where(s => s.StartDate >= DateTime.Now).ToList();
+            return film is null ? NotFound() : film.Sessions.Where(s => s.StartDate >= DateTime.Now).ToList();
         }
 
         [HttpGet("search")]
@@ -106,59 +104,72 @@ namespace LabWork13.Controllers
             [FromQuery] string? year = null,
             [FromQuery] string? genres = null)
         {
-            var years = year.Split('-');
+            var years = year?.Split('-');
+
             var films = _context.Films
                 .Include(f => f.Genres)
                 .AsQueryable();
-            var genreValues = genres.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-            if (years.Length != 2)
+            if (years?.Length != 2)
                 return BadRequest();
 
             int minYear, maxYear;
-            if (!Int32.TryParse(years[0], out minYear) ||
-                !Int32.TryParse(years[1], out maxYear))
-                return BadRequest();
-            else
+            if (Int32.TryParse(years[0], out minYear) &&
+                Int32.TryParse(years[1], out maxYear))
                 films = films.Where(f => f.ReleaseYear >= minYear && f.ReleaseYear <= maxYear);
+            else
+                return BadRequest();
 
-            var genre = await films.Select(f => f.Genres).ToListAsync();
+            if (string.IsNullOrWhiteSpace(genres))
+                BadRequest();
+            else
+            {
+                var genreValues = genres?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-            //return await films
-            //    .Where(f => genreValues.Contains());
+                films = films
+                    .Where(f => f.Genres.Any(g => genreValues!.Contains(g.Name)));
+            }
+
             return await films.ToListAsync();
         }
 
         [HttpGet("statistics")]
         public async Task<ActionResult<IEnumerable<FilmDto>>> GetFilmInfo()
         {
-            var tickets = _context.Tickets;
-
             return await _context.Films
                 .Select(f => new FilmDto()
                 {
                     Id = f.FilmId,
                     Title = f.Name,
-                    TiketsCount = tickets.Count(),
-                    SalesProfit = GetPrice(f.FilmId),
+                    TiketsCount = f.Sessions.Join(_context.Tickets,
+                        s => s.SessionId,
+                        t => t.SessionId,
+                        (s, t) => new TicketDto { Price = s.Price }).Count(),
+                    SalesProfit = f.Sessions.Join(_context.Tickets,
+                        s => s.SessionId,
+                        t => t.SessionId,
+                        (s, t) => new { s.Price }).Sum(s => s.Price),
                 })
                 .ToListAsync();
         }
 
         [HttpGet("statistics/{id}")]
-        public async Task<ActionResult<IEnumerable<FilmDto>>> GetFilmInfoById(int id)
+        public async Task<ActionResult<FilmDto>> GetFilmInfoById(int id)
         {
-            var tickets = _context.Tickets;
-
-            return await _context.Films.FirstOrDefaultAsync(id)
+            return await _context.Films
                 .Select(f => new FilmDto()
                 {
                     Id = f.FilmId,
                     Title = f.Name,
-                    TiketsCount = tickets.Count(),
-                    SalesProfit = GetPrice(f.FilmId),
-                })
-                .ToListAsync();
+                    TiketsCount = f.Sessions.Join(_context.Tickets,
+                        s => s.SessionId,
+                        t => t.SessionId,
+                        (s, t) => new { }).Count(),
+                    SalesProfit = f.Sessions.Join(_context.Tickets,
+                        s => s.SessionId,
+                        t => t.SessionId,
+                        (s, t) => new { s.Price }).Sum(s => s.Price),
+                }).FirstOrDefaultAsync(f => f.Id == id) ?? null!;
         }
 
         // PUT: api/Films/5
@@ -214,12 +225,5 @@ namespace LabWork13.Controllers
             return await _context.Films.AnyAsync(e => e.FilmId == id);
         }
 
-        private decimal GetPrice(int id)
-            => _context.Database
-                .SqlQuery<decimal>(@$"select sum(price) as value
-from [session]
-join ticket on [session].sessionId = ticket.sessionId
-where [session].filmId = {id}")
-                .FirstOrDefault();
     }
 }
