@@ -27,8 +27,8 @@ namespace Lection1024.Controllers
 
             return game is null ? NotFound() : game;
         }
-        #region specific get
 
+        #region specific get
         // GET: api/Games/?category=cat1,cat2,...
         [HttpGet("categories")]
         public async Task<ActionResult<IEnumerable<Game>>> GetGamesByCategories([FromQuery] string? categories)
