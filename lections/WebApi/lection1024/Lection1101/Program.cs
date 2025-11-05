@@ -5,7 +5,7 @@ using System.Text.Json;
 Console.WriteLine("call Web-API!");
 
 var client = new HttpClient();
-string baseUrl = "https://api.escuelajs.co/api/v1/";
+string baseUrl = "http://localhost:5256/scalar/v1/";
 client.BaseAddress = new Uri(baseUrl);
 
 using var response = await client.GetAsync("categories");
@@ -19,8 +19,6 @@ var jsonOptions = new JsonSerializerOptions
 
 var content = await response.Content.ReadAsStringAsync();
 var categories = JsonSerializer.Deserialize<List<Category>>(content, jsonOptions);
-
-
 
 Console.WriteLine();
 
@@ -36,7 +34,6 @@ static async Task<(HttpResponseMessage response1, HttpResponseMessage response2,
     response1.EnsureSuccessStatusCode();
 
     var result = await response1.Content.ReadFromJsonAsync<Category>();
-
 
     category.Name = "newName";
 
