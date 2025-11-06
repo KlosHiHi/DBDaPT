@@ -1,5 +1,4 @@
 ﻿using CinemaClassLibrary.Models;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -44,7 +43,7 @@ namespace ApiServicesLibrary.Services
             }
         }
 
-        public async Task<Ticket> PostAsync(Ticket ticket)
+        public async Task<string> PostAsync(Ticket ticket)
         {
             var json = JsonSerializer.Serialize(ticket, _jsonOptions);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -59,14 +58,17 @@ namespace ApiServicesLibrary.Services
                 Console.WriteLine(ex.Message);
             }
 
-            if(response.IsSuccessStatusCode)
-                string responceJson = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                string responseJson = await response.Content.ReadAsStringAsync();
+            }
+
             return await response.Content.ReadAsStringAsync() ?? null!;
         }
 
         public async Task DeleteAsync(int id)
         {
-
+            var response = await _client.DeleteAsync($"Tickets/{id}");
         }
     }
 }
