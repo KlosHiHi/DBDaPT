@@ -11,40 +11,39 @@ string login = "admin";
 string password = "admin1";
 
 using var context = new AppDbContext();
-var user = await context.Users.FirstOrDefaultAsync(u => u.Login == login);
-
-if (user is null)
+static void LockUser()
 {
-    Console.WriteLine("not found user");
+    var login = "admin";
+    var password = "123";
+    using var context = new AppDbContext();
+    var user = context.Users.FirstOrDefault(u => u.Login == login);
+
+    if (user is null)
+    {
+        Console.WriteLine("not found");
+        return;
+    }
+
+    if (IsUserLocked(user))
+    {
+        Console.WriteLine($"locked until {user.LockedUntil:HH:mm:ss}");
+        return;
+    }
+
+    // проверка, что попытка аутентификации неуспешна
+    if (!IsPasswordCorrect(password, user))
+    {
+        Console.WriteLine("incorrect password");
+        context.SaveChanges();
+        return;
+    }
+
+    SuccessLogin(user);
+    context.SaveChanges();
+
+    Console.WriteLine("welcome");
     return;
 }
-
-if (user.LockedUntil.HasValue && user.LockedUntil >= DateTime.UtcNow)
-{
-    Console.WriteLine($"user is locked, until {user.LockedUntil}");
-    return;
-}
-
-if (user.Password != password)
-{
-    user.FailedLoginAttemps++;
-
-    if (user.FailedLoginAttemps >= 3)
-        user.LockedUntil = DateTime.UtcNow.AddMinutes(10);
-
-    await context.SaveChangesAsync();
-
-    Console.WriteLine("password is uncorrect");
-    return;
-}
-
-user.LastAccess = DateTime.UtcNow;
-user.FailedLoginAttemps = 0;
-user.LockedUntil = null;
-
-context.SaveChanges();
-
-Console.WriteLine("Welcome");
 
 static void ComputeHash()
 {
@@ -85,4 +84,37 @@ static async Task InsertData()
     await context.Users.AddRangeAsync(users);
 
     await context.SaveChangesAsync();
+}
+
+static bool IsUserLocked(User user)
+{
+    if (user.LockedUntil.HasValue && user.LockedUntil <= DateTime.UtcNow)
+    {
+        user.FailedLoginAttempts = 0;
+        user.LockedUntil = null;
+        return false;
+    }
+    return user.LockedUntil.HasValue;
+}
+
+static bool IsPasswordCorrect(string password, User user)
+{
+    int attempts = 3;
+    int duration = 30;
+
+    if (user.Password != password)
+    {
+        user.FailedLoginAttempts++;
+        if (user.FailedLoginAttempts >= attempts)
+            user.LockedUntil = DateTime.UtcNow.AddSeconds(duration);
+        return false;
+    }
+    return true;
+}
+
+static void SuccessLogin(User user)
+{
+    user.FailedLoginAttempts = 0;
+    user.LockedUntil = null;
+    user.LastAccess = DateTime.UtcNow;
 }
