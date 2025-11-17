@@ -7,5 +7,6 @@ public partial class Ticket
     public int VisitorId { get; set; }
     public byte Row { get; set; }
     public byte Seat { get; set; }
+
     public virtual Visitor Visitor { get; set; } = null!;
 }

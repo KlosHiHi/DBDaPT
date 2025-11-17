@@ -69,14 +69,13 @@ namespace LabWork14.Controllers
         }
 
         // POST: api/Tickets
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Ticket>> PostTicket(Ticket ticket)
         {
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTicket", new { id = ticket.TicketId }, ticket);
+            return CreatedAtAction(nameof(GetTicket), new { id = ticket.TicketId }, ticket);
         }
 
         // DELETE: api/Tickets/5
@@ -84,7 +83,7 @@ namespace LabWork14.Controllers
         public async Task<IActionResult> DeleteTicket(int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
+            if (ticket is null)
             {
                 return NotFound();
             }

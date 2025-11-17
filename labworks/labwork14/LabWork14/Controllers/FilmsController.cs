@@ -74,7 +74,7 @@ namespace LabWork14.Controllers
             _context.Films.Add(film);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetFilm", new { id = film.FilmId }, film);
+            return CreatedAtAction(nameof(GetFilm), new { id = film.FilmId }, film);
         }
 
         // DELETE: api/Films/5
@@ -82,7 +82,7 @@ namespace LabWork14.Controllers
         public async Task<IActionResult> DeleteFilm(int id)
         {
             var film = await _context.Films.FindAsync(id);
-            if (film == null)
+            if (film is null)
             {
                 return NotFound();
             }

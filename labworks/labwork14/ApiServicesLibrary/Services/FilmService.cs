@@ -14,9 +14,9 @@ namespace ApiServicesLibrary.Services
 
         public async Task PutAsync(Film film)
         {
-            using var response = await _client.PutAsJsonAsync($"Films/{film.FilmId}", film);
             try
             {
+                using var response = await _client.PutAsJsonAsync($"Films/{film.FilmId}", film);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
@@ -25,26 +25,27 @@ namespace ApiServicesLibrary.Services
             }
         }
 
-        public async Task<Film> PostAsync(Film film)
+        public async Task<Film?> PostAsync(Film film)
         {
-            using var response = await _client.PostAsJsonAsync($"Films", film);
             try
             {
+                using var response = await _client.PostAsJsonAsync($"Films", film);
                 response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<Film>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            return await response.Content.ReadFromJsonAsync<Film>() ?? null!;
+
+            return null;
         }
 
         public async Task DeleteAsync(int id)
         {
-            using var response = await client.DeleteAsync($"Films/{id}");
             try
             {
-                response.EnsureSuccessStatusCode();
+                using var response = await client.DeleteAsync($"Films/{id}");
             }
             catch (Exception ex)
             {
