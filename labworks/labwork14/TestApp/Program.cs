@@ -20,7 +20,28 @@ static async Task VisitorServiceTest(HttpClient client)
     VisitorService visitorService = new(client);
 
     var visitors = await visitorService.GetAsync();
-    var visitor = await visitorService.GetAsyncById(1);
+    var visitor = await visitorService.GetAsyncById(5);
+
+    visitor.Email = "valerka666@gmail.com";
+    visitor.Name = "Валерончик";
+    visitor.Phone = "79340843455";
+
+    if(await visitorService.PutAsync(visitor))
+        Console.WriteLine("успешно");
+    else
+        Console.WriteLine("неуспешно");
+
+    Visitor bob = new()
+    {
+        Name = "Bob",
+        BirthDate = DateTime.Now,
+        Phone = "91071075594",
+        Email = "ggerda@yandex.ru"
+    };
+
+    var insertedVisitor = await visitorService.PostAsync(bob);
+
+    Console.WriteLine($"{insertedVisitor.Name} - {insertedVisitor.Phone}");
 }
 
 static async Task GenreServiceTest(HttpClient client)
