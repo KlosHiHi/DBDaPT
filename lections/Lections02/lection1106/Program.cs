@@ -115,6 +115,6 @@ static bool IsPasswordCorrect(string password, User user)
 static void SuccessLogin(User user)
 {
     user.FailedLoginAttempts = 0;
-    user.LockedUntil = null;
+    //user.LockedUntil = null;
     user.LastAccess = DateTime.UtcNow;
 }
