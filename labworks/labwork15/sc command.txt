@@ -1,0 +1,1 @@
+Scaffold-DbContext "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ispp3101;Integrated Security=True;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False" Microsoft.EntityFrameworkCore.SqlServer -Context CinemaUserDbContext -ContextDir Contexts -OutputDir Models -Tables CinemaUserRole, CinemaUser, CinemaPrivilege, CinemaRolePrivilege
