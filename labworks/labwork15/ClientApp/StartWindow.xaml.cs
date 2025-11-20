@@ -28,14 +28,13 @@ namespace ClientApp
         {
             RegistrationWindow window = new();
             window.ShowDialog();
-            window.Hide();
         }
 
         private void AuthButton_Click(object sender, RoutedEventArgs e)
         {
-            RegistrationWindow window = new();
-            window.ShowDialog();
-            window.Hide();
+            AuthorizationWindow window = new();
+            window.Show();
+            Close();
         }
     }
 }

@@ -12,8 +12,8 @@ namespace AuthLibrary.Services
         private string PasswordHashing(string password)
             => BCrypt.Net.BCrypt.EnhancedHashPassword(password);
 
-        private bool IsUserLocked(string password, CinemaUser user)
-            => BCrypt.Net.BCrypt.EnhancedVerify(password, user.PasswordHash);
+        private bool IsPasswordRight(string password, string passwordHash)
+            => BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
 
         static void CheckUserLock(CinemaUser user)
         {
@@ -23,7 +23,7 @@ namespace AuthLibrary.Services
 
         public void LockUser(CinemaUser user)
         {
-            user.UnlockDate = DateTime.UtcNow;
+            user.UnlockDate = DateTime.UtcNow.AddMinutes(5);
         }
 
         public async Task<bool> RegistrateUserAsync(string login, string password)
@@ -52,7 +52,7 @@ namespace AuthLibrary.Services
             {
                 CheckUserLock(user);
 
-                if (IsUserLocked(password, user))
+                if (IsPasswordRight(password, user.PasswordHash))
                     return user;
                 else
                     user.FailTryAuthQuantity++;
@@ -82,17 +82,16 @@ namespace AuthLibrary.Services
             return role is not null ?
                 role.Privileges :
                 null!;
-        }   
+        }
 
         public async Task<IEnumerable<CinemaPrivilege>> GetRolePrivileges(CinemaUserRole userRole)
         {
             var role = await _context.CinemaUserRoles
-                .FirstOrDefaultAsync(r=>r.RoleName == userRole.RoleName);
+                .FirstOrDefaultAsync(r => r.RoleName == userRole.RoleName);
 
             return role is not null ?
                 role.Privileges :
                 null!;
-
         }
     }
 }
