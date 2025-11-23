@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CinemaDbLibrary/CinemaDbLibrary.csproj" />
+  <Project Path="WebApi/WebApi.csproj" />
+</Solution>

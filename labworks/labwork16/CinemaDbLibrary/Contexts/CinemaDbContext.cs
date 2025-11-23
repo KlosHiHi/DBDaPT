@@ -1,15 +1,17 @@
-﻿using AuthLibrary.Models;
+﻿using System;
+using System.Collections.Generic;
+using CinemaDbLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuthLibrary.Contexts;
+namespace CinemaDbLibrary.Contexts;
 
-public partial class CinemaUserDbContext : DbContext
+public partial class CinemaDbContext : DbContext
 {
-    public CinemaUserDbContext()
+    public CinemaDbContext()
     {
     }
 
-    public CinemaUserDbContext(DbContextOptions<CinemaUserDbContext> options)
+    public CinemaDbContext(DbContextOptions<CinemaDbContext> options)
         : base(options)
     {
     }
@@ -20,10 +22,14 @@ public partial class CinemaUserDbContext : DbContext
 
     public virtual DbSet<CinemaUserRole> CinemaUserRoles { get; set; }
 
+    public virtual DbSet<Film> Films { get; set; }
+
+    public virtual DbSet<Ticket> Tickets { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Data Source=mssql;Initial Catalog=ispp3101;User ID=ispp3101;Password=3101;Trust Server Certificate=True");
-        //optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ispp3101;Integrated Security=True;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False");
+        optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ispp3101;Integrated Security=True;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True");
+        //optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ispp3101;Integrated Security=True;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,10 +51,10 @@ public partial class CinemaUserDbContext : DbContext
 
             entity.Property(e => e.Login)
                 .HasMaxLength(50)
-                .IsFixedLength();
+                .IsUnicode(false);
             entity.Property(e => e.PasswordHash)
                 .HasMaxLength(200)
-                .IsFixedLength();
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Role).WithMany(p => p.CinemaUsers)
                 .HasForeignKey(d => d.RoleId)
@@ -80,6 +86,26 @@ public partial class CinemaUserDbContext : DbContext
                         j.HasKey("RoleId", "PrivilegeId");
                         j.ToTable("CinemaRolePrivilege");
                     });
+        });
+
+        modelBuilder.Entity<Film>(entity =>
+        {
+            entity.ToTable("Film", tb => tb.HasTrigger("TrDeleteFilm"));
+
+            entity.Property(e => e.AgeLimit)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Duration).HasDefaultValue((short)90);
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.ReleaseYear).HasDefaultValueSql("(datepart(year,getdate()))");
+        });
+
+        modelBuilder.Entity<Ticket>(entity =>
+        {
+            entity.ToTable("Ticket", tb => tb.HasTrigger("TrAddTicket"));
+
+            entity.HasIndex(e => new { e.SessionId, e.Row, e.Seat }, "UQ_Ticket").IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);
