@@ -11,17 +11,19 @@ namespace ClientApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private AuthService _authService = new(new CinemaUserDbContext());
-        private CinemaUserRole _userRole;
-
         public MainWindow()
         {
             InitializeComponent();
-            WelcomeTextBlock.Text = $"{UserSession.Instance.CurrentUser.Login}, добро пожаловать!!!";
+
+            SetWelcomeText();
 
             SetPrivileges();
         }
 
+        private void SetWelcomeText()
+        {
+            WelcomeTextBlock.Text = $"{UserSession.Instance.CurrentUser.Login}, добро пожаловать!!!";
+        }
 
         private void SetPrivileges()
         {
@@ -64,6 +66,11 @@ namespace ClientApp
             Hide();
             window.ShowDialog();
             Show();
+        }
+
+        private void NoImplementButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Функционал ещё не реализован!");
         }
     }
 }

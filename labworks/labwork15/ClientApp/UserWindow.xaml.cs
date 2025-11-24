@@ -14,11 +14,17 @@ namespace ClientApp
         public UserWindow()
         {
             InitializeComponent();
+
             var users = _context.CinemaUsers;
             UserDataGrid.ItemsSource = users.ToList();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveChanges();
+        }
+
+        private void SaveChanges()
         {
             foreach (CinemaUser user in UserDataGrid.ItemsSource)
                 _context.CinemaUsers.Update(user);

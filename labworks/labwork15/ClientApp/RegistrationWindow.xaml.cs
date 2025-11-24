@@ -18,24 +18,16 @@ namespace ClientApp
             string login = LoginTextBox.Text;
             string password = PasswordTextBox.Text;
 
-            if (!IsPasswordCorrect(password) || !IsLoginCorrect(login))
-            {
-                MessageBox.Show("Данные не корректны");
-                return;
-            }
-
-            var isUserRegistered = await _authService.RegistrateUserAsync(login, password);
-
-            MessageBox.Show($"{(isUserRegistered ? 
-                "Пользователь успешно зарегистрирован" : 
-                "При регистрации произошла ошибка")}");
+            await RegistrateUser(login, password);
         }
 
-        private static bool IsPasswordCorrect(string password)
-            => (String.IsNullOrWhiteSpace(password) && password.Length <= 3) ? false : true;
+        private async Task RegistrateUser(string login, string password)
+        {
+            var isUserRegistered = await _authService.RegistrateUserAsync(login, password);
 
-        private static bool IsLoginCorrect(string login)
-             => (String.IsNullOrWhiteSpace(login)) ? false : true;
-
+            MessageBox.Show($"{(isUserRegistered ?
+                "Пользователь успешно зарегистрирован" :
+                "При регистрации произошла ошибка")}");
+        }
     }
 }

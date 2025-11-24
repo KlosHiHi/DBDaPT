@@ -23,7 +23,7 @@ namespace CinemaDbLibrary.Service
         private bool VerifyPassword(string password, string passwordHash)
             => BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
 
-        private async Task<bool> IsUserLockAsync(CinemaUser user)
+        private bool IsUserLockAsync(CinemaUser user)
         {
             if (user.UnlockDate.HasValue && user.UnlockDate <= DateTime.UtcNow)
             {
@@ -34,9 +34,9 @@ namespace CinemaDbLibrary.Service
             return user.UnlockDate.HasValue;
         }
 
-        private void LockUser(CinemaUser user, int secondsDuration)
+        private void LockUser(CinemaUser user)
         {
-            user.UnlockDate = DateTime.UtcNow.AddSeconds(secondsDuration);
+            user.UnlockDate = DateTime.UtcNow.AddSeconds(_blockDuration);
         }
 
 
@@ -54,7 +54,7 @@ namespace CinemaDbLibrary.Service
             user.FailTryAuthQuantity++;
 
             if (user.FailTryAuthQuantity == _maxFailTry)
-                LockUser(user, _blockDuration);
+                LockUser(user);
         }
 
         private async Task<TokenResponse> GenerateToken(CinemaUser user)
@@ -124,7 +124,7 @@ namespace CinemaDbLibrary.Service
             if (user is null)
                 return null;
 
-            if (await IsUserLockAsync(user))
+            if (IsUserLockAsync(user))
                 return null;
 
             return IsAuthCorrect(password, user) ?

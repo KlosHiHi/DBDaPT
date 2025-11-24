@@ -31,10 +31,10 @@
         <Button x:Name="LogOutButton" Content="Выйти" Click="LogOutButton_Click" Grid.Row="1" Grid.RowSpan="2" Width="100"/>
 
         <StackPanel Grid.Column="1" Margin="10" Orientation="Vertical">
-            <Button x:Name="ToPersonalDataButton" Content="Личный кабинет"/>
-            <Button x:Name="ShowTicketButton" Content="Проверить билеты" Visibility="Collapsed"/>
-            <Button x:Name="ShowFilmButton" Content="Список фильмов" Visibility="Collapsed"/>
-            <Button x:Name="AddUserButton" Content="Добавить пользователя" Visibility="Collapsed"/>
+            <Button x:Name="ToPersonalDataButton" Content="Личный кабинет" Click="NoImplementButton_Click"/>
+            <Button x:Name="ShowTicketButton" Content="Проверить билеты" Visibility="Collapsed" Click="NoImplementButton_Click"/>
+            <Button x:Name="ShowFilmButton" Content="Список фильмов" Visibility="Collapsed" Click="NoImplementButton_Click"/>
+            <Button x:Name="AddUserButton" Content="Добавить пользователя" Visibility="Collapsed" Click="NoImplementButton_Click"/>
             <Button x:Name="ToEditUserWindowButton" Content="Редактирование пользователей" Visibility="Collapsed" Click="ToEditUserWindowButton_Click"/>
         </StackPanel>
     </Grid>

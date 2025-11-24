@@ -22,12 +22,6 @@ namespace ClientApp
             string login = LoginTextBox.Text;
             string password = PasswordTextBox.Text;
 
-            if (!IsPasswordCorrect(password) || !IsLoginCorrect(login))
-            {
-                MessageBox.Show("Данные не корректны");
-                return;
-            }
-
             await StartNewSessionAsync(login, password);
 
             OpenMainWindow();
@@ -45,10 +39,5 @@ namespace ClientApp
             var user = await _authService.AuthUserAsync(login, password);
             UserSession.Instance.SetCurrentUser(user);
         }
-        private static bool IsPasswordCorrect(string password)
-            => (String.IsNullOrWhiteSpace(password)) ? false : true;
-
-        private static bool IsLoginCorrect(string login)
-             => (String.IsNullOrWhiteSpace(login)) ? false : true;
     }
 }
