@@ -23,7 +23,6 @@ namespace ClientApp
             string password = PasswordTextBox.Text;
 
             await StartNewSessionAsync(login, password);
-
         }
 
         private void OpenMainWindow()
