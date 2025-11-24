@@ -24,7 +24,6 @@ namespace ClientApp
 
             await StartNewSessionAsync(login, password);
 
-            OpenMainWindow();
         }
 
         private void OpenMainWindow()
@@ -37,6 +36,14 @@ namespace ClientApp
         private async Task StartNewSessionAsync(string login, string password)
         {
             var user = await _authService.AuthUserAsync(login, password);
+
+            if (user is null)
+            {
+                MessageBox.Show("Данные не верны");
+                return;
+            }
+
+            OpenMainWindow();
             UserSession.Instance.SetCurrentUser(user);
         }
     }
