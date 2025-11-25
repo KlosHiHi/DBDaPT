@@ -16,12 +16,13 @@ namespace AuthLibrary.Services
         private bool VerifyPassword(string password, string passwordHash)
             => BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash);
 
-        static bool IsUserLock(CinemaUser user)
+        private async Task<bool> IsUserLockAsync(CinemaUser user)
         {
             if (user.UnlockDate.HasValue && user.UnlockDate <= DateTime.UtcNow)
             {
                 user.UnlockDate = null;
                 user.FailTryAuthQuantity = 0;
+                await _context.SaveChangesAsync();
             }
 
             return user.UnlockDate.HasValue;
@@ -32,21 +33,23 @@ namespace AuthLibrary.Services
             user.UnlockDate = DateTime.UtcNow.AddMinutes(_blockDuration);
         }
 
-        private bool IsAuthCorrect(string password, CinemaUser user)
+        private async Task<bool> IsAuthCorrectAsync(string password, CinemaUser user)
         {
             if (VerifyPassword(password, user.PasswordHash))
                 return true;
 
-            AddFailTry(user);
+            await AddFailTryAsync(user);
             return false;
         }
 
-        private void AddFailTry(CinemaUser user)
+        private async Task AddFailTryAsync(CinemaUser user)
         {
             user.FailTryAuthQuantity++;
 
             if (user.FailTryAuthQuantity == _maxFailTry)
                 LockUser(user);
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<CinemaUser> GetUserByLoginAsync(string login)
@@ -63,11 +66,13 @@ namespace AuthLibrary.Services
             if (user is not null)
                 return false;
 
+            var role = await _context.CinemaUserRoles.FirstOrDefaultAsync(r => r.RoleName == "Посетитель");
+
             CinemaUser cinemaUser = new()
             {
                 Login = login,
                 PasswordHash = HashPassword(password),
-                RoleId = 3
+                RoleId = role.RoleId
             };
 
             await _context.CinemaUsers.AddAsync(cinemaUser);
@@ -84,10 +89,10 @@ namespace AuthLibrary.Services
             if (user is null)
                 return null;
 
-            if (IsUserLock(user))
+            if (await IsUserLockAsync(user))
                 return null;
 
-            return IsAuthCorrect(password, user) ?
+            return await IsAuthCorrectAsync(password, user) ?
                 user :
                 null;
         }
@@ -109,7 +114,7 @@ namespace AuthLibrary.Services
 
             return role is not null ?
                 role.Privileges :
-                null!;
+                new List<CinemaPrivilege>();
         }
 
         public async Task<IEnumerable<CinemaPrivilege>> GetRolePrivileges(CinemaUserRole userRole)
@@ -119,7 +124,7 @@ namespace AuthLibrary.Services
 
             return role is not null ?
                 role.Privileges :
-                null!;
+                new List<CinemaPrivilege>();
         }
     }
 }

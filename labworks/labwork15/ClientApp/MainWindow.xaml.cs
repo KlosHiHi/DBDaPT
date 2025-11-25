@@ -2,6 +2,7 @@
 using AuthLibrary.Models;
 using AuthLibrary.Services;
 using ClientApp.Class;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ClientApp
@@ -11,6 +12,7 @@ namespace ClientApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private AuthService _authService = new(new CinemaUserDbContext());
         public MainWindow()
         {
             InitializeComponent();
@@ -25,22 +27,22 @@ namespace ClientApp
             WelcomeTextBlock.Text = $"{UserSession.Instance.CurrentUser.Login}, добро пожаловать!!!";
         }
 
-        private void SetPrivileges()
+        private async Task SetPrivileges()
         {
-            var roleId = UserSession.Instance.CurrentUser.RoleId;
+            var role = await _authService.GetUserRoleAsync(UserSession.Instance.CurrentUser.Login);
 
-            switch (roleId)
+            switch (role.RoleName)
             {
-                case 1:
+                case "Администратор":
                     AddUserButton.Visibility = Visibility.Visible;
-                    ToEditUserWindowButton.Visibility = Visibility.Visible;
+                    EditUserButton.Visibility = Visibility.Visible;
                     break;
-                case 2:
-                    ShowTicketButton.Visibility = Visibility.Visible;
-                    ShowFilmButton.Visibility = Visibility.Visible;
+                case "Билетер":
+                    ShowTicketsButton.Visibility = Visibility.Visible;
+                    ShowFilmsButton.Visibility = Visibility.Visible;
                     break;
-                case 3:
-                    ShowFilmButton.Visibility = Visibility.Visible;
+                case "Посетитель":
+                    ShowFilmsButton.Visibility = Visibility.Visible;
                     break;
                 default:
                     break;

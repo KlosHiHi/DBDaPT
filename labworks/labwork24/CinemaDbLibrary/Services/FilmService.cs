@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CinemaClassLibrary.DTOs
+namespace CinemaDbLibrary.Services
 {
-    public class TicketDto
+    public class FilmService
     {
     }
 }

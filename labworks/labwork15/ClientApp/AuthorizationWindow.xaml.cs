@@ -42,8 +42,8 @@ namespace ClientApp
                 return;
             }
 
-            OpenMainWindow();
             UserSession.Instance.SetCurrentUser(user);
+            OpenMainWindow();
         }
     }
 }
