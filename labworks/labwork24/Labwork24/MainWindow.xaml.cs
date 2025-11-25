@@ -1,5 +1,6 @@
 ﻿using CinemaDbLibrary.Contexts;
 using CinemaDbLibrary.Services;
+using Microsoft.Win32;
 using System.IO;
 using System.Windows;
 
@@ -21,20 +22,19 @@ namespace Labwork24
         {
             if (!int.TryParse(TicketIdTextBox.Text, out int ticketid))
                 MessageBox.Show("ID должен быть числом!");
+            DateTime var = new();
 
-            var ticket = await _ticketService.GetTicketByIdAsync(ticketid);
-            string filmName = await _ticketService.GetFilmNameByTicketIdAsync(ticketid);
-            DateTime startDate = await _ticketService.GetSessionStartTimeByTicketId(ticketid);
-            string cinemaName = await _ticketService.GetCinemaNameByTicketIdAsync(ticketid);
-            int hallNumber = await _ticketService.GetHallNumByTicketIdAsync(ticketid);
+            var ticket = await _ticketService.GetTicketDtoByIdAsync(ticketid);
+            string result = $"Билет {ticket.TicketId} \r\n{ticket.FilmName}\r\nНачало сеанса: {ticket.SessionStartDate?.ToString("HH:mm d MMMM")}\r\nКинотеатр: {ticket.CinemaName}\r\nЗал: {ticket.HallNumber}\r\nРяд: {ticket.Row} Место: {ticket.Seat}";
 
-            string result = $"Билет {ticket.TicketId} \r\n{filmName}\r\nНачало сеанса: {startDate:'hh:mm dd MMMMM'}\r\nКинотеатр: {cinemaName}\r\nЗал: {hallNumber}\r\nРяд: {ticket.Row} Место: {ticket.Seat}";
+            SaveFileDialog fileDialog = new();
+            fileDialog.ShowDialog();
 
-            string fileName = "C:\\Temp\\1.txt";
+            var fileName = fileDialog.FileName;
 
             using (StreamWriter writer = new(fileName))
             {
-               await writer.WriteLineAsync(result);
+                writer.WriteLine(result);
             }
         }
     }

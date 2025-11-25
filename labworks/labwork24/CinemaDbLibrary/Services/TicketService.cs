@@ -1,4 +1,5 @@
 ﻿using CinemaDbLibrary.Contexts;
+using CinemaDbLibrary.DTOs;
 using CinemaDbLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,43 +12,27 @@ namespace CinemaDbLibrary.Services
         public async Task<Ticket?> GetTicketByIdAsync(int id)
             => await _context.Tickets.FindAsync(id);
 
-        public async Task<string> GetFilmNameByTicketIdAsync(int id)
-            => await _context.Database
-            .SqlQuery<string>($@"
-SELECT Film.Name
-FROM Session INNER JOIN
-	Ticket ON Session.SessionId = Ticket.SessionId INNER JOIN
-	Film ON Session.FilmId = Film.FilmId
-WHERE Ticket.TicketId = {id}")
-            .FirstOrDefaultAsync() ?? "";
+        public async Task<TicketDto?> GetTicketDtoByIdAsync(int id)
+        {
+            var ticket = await _context.Tickets
+                .Include(t => t.Session)
+                    .ThenInclude(s => s.Hall)
+                .Include(t => t.Session)
+                    .ThenInclude(s => s.Film)
+                .FirstOrDefaultAsync(t => t.TicketId == id) ?? null!;
 
-        public async Task<DateTime> GetSessionStartTimeByTicketId(int id)
-            => await _context.Database
-                .SqlQuery<DateTime>($@"
-SELECT Session.StartDate
-FROM Session INNER JOIN
-	Ticket ON Session.SessionId = Ticket.SessionId
-WHERE Ticket.TicketId = {id}")
-                .FirstOrDefaultAsync();
+            TicketDto result = new()
+            {
+                TicketId = ticket.TicketId,
+                FilmName = ticket.Session.Film.Name,
+                CinemaName = ticket.Session.Hall.CinemaName,
+                HallNumber = ticket.Session.Hall.HallNumber,
+                SessionStartDate = ticket.Session.StartDate,
+                Row = ticket.Row,
+                Seat = ticket.Seat
+            };
 
-        public async Task<string> GetCinemaNameByTicketIdAsync(int id)
-            => await _context.Database
-            .SqlQuery<string>($@"
-SELECT CinemaHall.CinemaName
-FROM Session INNER JOIN
-	Ticket ON Session.SessionId = Ticket.SessionId INNER JOIN
-	CinemaHall ON Session.HallId = CinemaHall.HallId
-WHERE Ticket.TicketId = {id}")
-            .FirstOrDefaultAsync() ?? "";
-
-        public async Task<int> GetHallNumByTicketIdAsync(int id)
-            => await _context.Database
-            .SqlQuery<int>($@"
-SELECT CinemaHall.HallNumber
-FROM Session INNER JOIN
-	Ticket ON Session.SessionId = Ticket.SessionId INNER JOIN
-	CinemaHall ON Session.HallId = CinemaHall.HallId
-WHERE Ticket.TicketId = {id}")
-            .FirstOrDefaultAsync();
+            return result;
+        }
     }
 }

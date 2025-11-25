@@ -9,7 +9,7 @@
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" Height="30" Margin="10">
             <TextBlock Text="Введите номер билета: " VerticalAlignment="Center" FontSize="15"/>
-            <TextBox x:Name="TicketIdTextBox" Width="50" Height="20" Text="2" FontSize="15" TextAlignment="Right"/>
+            <TextBox x:Name="TicketIdTextBox" Width="50" Height="20" FontSize="15" TextAlignment="Right"/>
             <Button x:Name="SaveTicketButton" Content="Сохранить билет" Margin="2" Click="SaveTicketButton_Click" FontSize="18"/>
         </DockPanel>
         <TextBlock/>

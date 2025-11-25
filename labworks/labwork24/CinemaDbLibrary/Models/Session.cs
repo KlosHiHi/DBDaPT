@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CinemaDbLibrary.Models;
+﻿namespace CinemaDbLibrary.Models;
 
 public partial class Session
 {
