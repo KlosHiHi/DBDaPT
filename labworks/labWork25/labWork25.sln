@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36109.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabWork25", "LabWork25\LabWork25.csproj", "{5273CF46-F878-4106-8F27-96DE96C10F86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaClassLibrary", "CinemaClassLibrary\CinemaClassLibrary.csproj", "{BD1EEA58-42A2-4886-965D-F6B8C7288A11}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5273CF46-F878-4106-8F27-96DE96C10F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5273CF46-F878-4106-8F27-96DE96C10F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5273CF46-F878-4106-8F27-96DE96C10F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5273CF46-F878-4106-8F27-96DE96C10F86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD1EEA58-42A2-4886-965D-F6B8C7288A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD1EEA58-42A2-4886-965D-F6B8C7288A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD1EEA58-42A2-4886-965D-F6B8C7288A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD1EEA58-42A2-4886-965D-F6B8C7288A11}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {112C839F-1CD9-4981-ACD4-0697561DA740}
+	EndGlobalSection
+EndGlobal

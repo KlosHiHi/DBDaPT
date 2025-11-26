@@ -19,7 +19,7 @@ namespace CinemaDbLibrary.Services
                     .ThenInclude(s => s.Hall)
                 .Include(t => t.Session)
                     .ThenInclude(s => s.Film)
-                .FirstOrDefaultAsync(t => t.TicketId == id) ?? null!;
+                .FirstOrDefaultAsync(t => t.TicketId == id);
 
             TicketDto result = new()
             {
