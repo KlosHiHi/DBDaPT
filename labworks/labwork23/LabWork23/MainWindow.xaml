@@ -1,0 +1,20 @@
+﻿<Window x:Class="LabWork23.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LabWork23"
+        mc:Ignorable="d"
+        Title="Добавление логотипа в игру" Height="400" Width="500" Loaded="Window_Loaded" Background="LightSalmon">
+    <DockPanel>
+        <Button x:Name="SaveButton" Content="Сохранить" Click="SaveButton_Click" DockPanel.Dock="Bottom" Height="40" Width="400" FontSize="20" Margin="10"/>
+        <DockPanel>
+            <WrapPanel Orientation="Vertical" DockPanel.Dock="Right" VerticalAlignment="Center">
+                <Image x:Name="ShowLogoImage" Height="150" Width="150" Margin="10"/>
+                <TextBlock x:Name="FileNameTextBlock" HorizontalAlignment="Center"/>
+                <Button x:Name="SelectLogoButton" Content="Выбрать изображение" Margin="10" Click="SelectLogoButton_Click"/>
+            </WrapPanel>
+            <ComboBox x:Name="GamesComboBox" Width="250" Height="40" VerticalAlignment="Center" FontSize="15" VerticalContentAlignment="Center" SelectionChanged="GamesComboBox_SelectionChanged"/>
+        </DockPanel>
+    </DockPanel>
+</Window>
