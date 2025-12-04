@@ -2,13 +2,13 @@
 @model LabWork17.Pages.Tickets.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Билеты";
 }
 
-<h1>Index</h1>
+<h1>Страница с билетами</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create">Добавить билет</a>
 </p>
 <table class="table">
     <thead>
@@ -44,9 +44,9 @@
                 @Html.DisplayFor(modelItem => item.Visitor.Phone)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.TicketId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.TicketId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.TicketId">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.TicketId">Изменить</a> |
+                <a asp-page="./Details" asp-route-id="@item.TicketId">Доп. информация</a> |
+                <a asp-page="./Delete" asp-route-id="@item.TicketId">Удалить</a>
             </td>
         </tr>
 }

@@ -2,13 +2,12 @@
 @model LabWork17.Pages.Films.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Фильмы";
 }
 
-<h1>Index</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create">Добавить фильм</a>
 </p>
 <table class="table">
     <thead>
@@ -68,9 +67,9 @@
                 @Html.DisplayFor(modelItem => item.IsDeleted)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.FilmId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.FilmId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.FilmId">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.FilmId">Изменить</a> |
+                <a asp-page="./Details" asp-route-id="@item.FilmId">Доп. информация</a> |
+                <a asp-page="./Delete" asp-route-id="@item.FilmId">Удалить</a>
             </td>
         </tr>
 }

@@ -1,10 +1,16 @@
 using AuthLibrary.Contexts;
+using AuthLibrary.Services;
 using CinemaClassLibrary.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddDbContext<CinemaDbContext>();
 builder.Services.AddDbContext<CinemaUserDbContext>();
@@ -19,6 +25,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();

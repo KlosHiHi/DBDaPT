@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor Accessor;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -13,7 +16,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">LabWork17</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Главная</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,14 +24,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Films/Index">Films</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Films/Index">Фильмы</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Tickets/Index">Tickets</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Tickets/Index">Билеты</a>
                         </li>
                     </ul>
                 </div>
-                <a asp-page="/Login" asp-page-handler="Login" class="btn btn-primary">Login</a>
+                @Accessor.HttpContext.Session.GetString("Login")
+                @if(Accessor.HttpContext.Session.GetString("Role") is null)
+                {
+                    <a asp-page="/Login" asp-page-handler="Login" class="btn btn-primary">Войти</a>
+                }
+                else
+                {
+                    <a asp-page="/Login" asp-page-handler="Logout" class="btn btn-primary">Выйти</a>
+                }
             </div>
         </nav>
     </header>
@@ -40,7 +51,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - LabWork17 - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2025 - LabWork17 - <a asp-area="" asp-page="/Privacy">Политика использования</a>
         </div>
     </footer>
 
