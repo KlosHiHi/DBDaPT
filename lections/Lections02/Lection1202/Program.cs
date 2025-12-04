@@ -3,7 +3,10 @@ using Lection1202.Contexts;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<GamesDbContext>();
+    
+
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -15,6 +18,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();

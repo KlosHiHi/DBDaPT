@@ -1,9 +1,9 @@
-﻿using LabWork12.Contexts;
-using LabWork12.Models;
+﻿using CinemaClassLibrary.Contexts;
+using CinemaClassLibrary.Models;
 using LabWork12.Sorts;
 using Microsoft.EntityFrameworkCore;
 
-namespace LabWork12.Services
+namespace CinemaClassLibrary.Services
 {
     public class SessionService(CinemaDbContext context)
     {

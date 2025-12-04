@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Lection1202.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Lection1202.Contexts;
-using Lection1202.Models;
 
 namespace Lection1202.Pages
 {
@@ -26,7 +20,8 @@ namespace Lection1202.Pages
 
         public IActionResult OnGetLogout()
         {
-            return RedirectToPage("/Games/Index");
+            HttpContext.Session.Clear();
+            return Page();
         }
 
         [BindProperty]
@@ -34,19 +29,20 @@ namespace Lection1202.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
+            var user = _context.Users
+                //.Include(u => u.Role)
+                .FirstOrDefault(u => u.Login == User.Login);
+
+            if (user is null || user.Password != User.Password) 
                 return Page();
-            }
 
-            _context.Users.Add(User);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            HttpContext.Session.SetString("Role", user.Role);
+            return RedirectToPage("/Index");
         }
 
         public async Task<IActionResult> OnPostGuestAsync()
         {
+            HttpContext.Session.SetString("Role", "Гость");
             return RedirectToPage("/Games/Index");
         }
     }
