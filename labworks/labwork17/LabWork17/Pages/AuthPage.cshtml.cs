@@ -19,10 +19,7 @@ namespace LabWork17.Pages
 
         protected IActionResult IsInRole(string role)
         {
-            switch (role)
-            {
-
-            }
+           throw new NotImplementedException();
         }
     }
 }

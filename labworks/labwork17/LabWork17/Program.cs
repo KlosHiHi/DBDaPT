@@ -1,6 +1,7 @@
 using AuthLibrary.Contexts;
 using AuthLibrary.Services;
 using CinemaClassLibrary.Contexts;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddDbContext<CinemaDbContext>();
 builder.Services.AddDbContext<CinemaUserDbContext>();
+
+CultureInfo.DefaultThreadCurrentCulture =
+    new("ru-RU") { NumberFormat = { NumberDecimalSeparator = "." } };
 
 var app = builder.Build();
 

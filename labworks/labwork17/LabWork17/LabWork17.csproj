@@ -19,4 +19,8 @@
     <ProjectReference Include="..\CinemaClassLibrary\CinemaClassLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Users\" />
+  </ItemGroup>
+
 </Project>
