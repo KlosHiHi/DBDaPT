@@ -6,6 +6,34 @@
 }
 
 <h1>Главная</h1>
+<form method="get" asp-page-handler="Sort">
+    <input type="text"
+           name="filmTitle"
+           value="@Model.FilmTitle"
+           placeholder="Поиск..."
+           onchange="this.form.submit()"
+           class="form-control" />
+
+    <select class="form-control"
+            onchange="this.form.submit()"
+            name="sortColumn">
+        <option value="price" selected="@(Model.SortColumn == "price")">
+            По цене (дешевые)
+        </option>
+        <option value="price_desc" selected="@(Model.SortColumn == "price_desc")">
+            По цене (дорогие)
+        </option>
+    </select>
+
+    <select class="form-control" asp-items="ViewBag.Halls"
+            asp-for="Hall"
+            name="hall"
+            onchange="this.form.submit()">
+        <option>
+            Все
+        </option>
+    </select>
+</form>
 
 <p>
     <a asp-page="Create">Добавить сеанс</a>
@@ -58,3 +86,13 @@
 }
     </tbody>
 </table>
+
+@if (Model.PageIndex > 1)
+{
+    <a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex - 1)">Назад</a>
+}
+@Model.PageIndex
+@if (Model.PageIndex < Model.TotalPages)
+{
+    <a asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex + 1)">Вперед</a>
+}
