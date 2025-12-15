@@ -3,7 +3,8 @@ using Lection1202.Contexts;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
-    
+
+builder.Services.AddScoped<GamesDbContext>();
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();

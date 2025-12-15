@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiProgram.Pages.FilmsPage"
+             Title="Фильмы">
+    <VerticalStackLayout>
+        <Grid HorizontalOptions="Fill">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.75*"/>
+                <ColumnDefinition Width="0.1*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Entry Placeholder="Введите название..." HorizontalOptions="Fill" x:Name="FilmNameEntry"/>
+            <Button Text="🔍" Grid.Column="1" x:Name="FindButton" Clicked="FindButton_Clicked"/>
+            <Picker ItemsSource="{Binding Sort}" Grid.Column="3" x:Name="SortPicker" SelectedIndexChanged="SortPicker_SelectedIndexChanged"/>
+        </Grid>
+        <Border Stroke="#000000" StrokeThickness="2" StrokeShape="RoundRectangle 10" Padding="5">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="ID" FontSize="20" HorizontalTextAlignment="Center"/>
+            <Label Text="Название" FontSize="20" Grid.Column="1"/>
+            <Label Text="Длительность" FontSize="20" Grid.Column="2" HorizontalTextAlignment="Center"/>
+            <Label Text="Год выпуска" FontSize="18" Grid.Column="3" HorizontalTextAlignment="Center"/>
+            <Label Text="Описание" FontSize="18" Grid.Column="4"/>
+        </Grid>
+        </Border>
+        <Border Stroke="#000000" StrokeThickness="2" StrokeShape="RoundRectangle 10" Padding="5">
+            <ListView ItemsSource="{Binding Films}" x:Name="FilmListView">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="0.5*"/>
+                                    <ColumnDefinition Width="0.5*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding FilmId}" FontSize="18" HorizontalTextAlignment="Center"/>
+                                <Label Text="{Binding Name}" FontSize="18" Grid.Column="1"/>
+                                <Label Text="{Binding Duration, StringFormat='{0} мин.'}" FontSize="18" Grid.Column="2" HorizontalTextAlignment="Center"/>
+                                <Label Text="{Binding ReleaseYear, StringFormat='{0} г.'}" FontSize="18" Grid.Column="3" HorizontalTextAlignment="Center"/>
+                                <Label Text="{Binding Description}" FontSize="18" Grid.Column="4"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+        </Border>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Button Text="&lt;" FontSize="20" x:Name="BackPageButton" Clicked="BackPageButton_Clicked" IsEnabled="False"/>
+            <Label Text="1" FontSize="30" HorizontalOptions="Center" x:Name="PageNumberLabel" Margin="5,0,5,0"/>
+            <Button Text="&gt;" FontSize="20" x:Name="ForwardPageButton" Clicked="ForwardPageButton_Clicked"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

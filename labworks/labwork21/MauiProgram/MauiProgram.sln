@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36109.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiProgram", "MauiProgram.csproj", "{9514B700-DDCF-4394-9E2E-66FF15ADB03A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmLibrary", "..\FilmLibrary\FilmLibrary.csproj", "{7E684E18-7965-9510-4E5C-5BE8C2491E50}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9514B700-DDCF-4394-9E2E-66FF15ADB03A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9514B700-DDCF-4394-9E2E-66FF15ADB03A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9514B700-DDCF-4394-9E2E-66FF15ADB03A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9514B700-DDCF-4394-9E2E-66FF15ADB03A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9514B700-DDCF-4394-9E2E-66FF15ADB03A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E684E18-7965-9510-4E5C-5BE8C2491E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E684E18-7965-9510-4E5C-5BE8C2491E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E684E18-7965-9510-4E5C-5BE8C2491E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E684E18-7965-9510-4E5C-5BE8C2491E50}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {47CD6C9B-9302-4863-B959-E87660B5D2AD}
+	EndGlobalSection
+EndGlobal
